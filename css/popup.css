@@ -1,0 +1,98 @@
+@keyframes bgcolor {
+  0% {
+      background-color: #45e5d8
+  }
+
+  30% {
+      background-color: #259fbe
+  }
+
+  60% {
+      background-color: #0f93eb
+  }
+
+  90% {
+      background-color: rgb(2, 49, 180)
+  }
+
+  100% {
+      background-color: #030e70
+  }
+}
+
+body {
+  width: 300px;
+  -webkit-animation: bgcolor 20s infinite;
+  animation: bgcolor 10s ease-in-out infinite;
+  -webkit-animation-direction: alternate;
+  animation-direction: alternate;
+}
+
+div{
+    backface-visibility: hidden;
+    width: 300px;
+    font-size: 4mm;
+    font-style: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    color: rgb(0, 0, 0);
+}
+
+
+h1 {
+    background-image: linear-gradient(to right, red,orange);
+    padding: 7px;
+    font: "Chalkduster";
+    text-align: center;
+    border-radius: 14px;
+    border: 2px solid rgb(2, 2, 2);
+    color: rgb(14, 12, 12);
+    font-style: oblique;
+}
+
+button {
+  display: inline-block;
+  border-radius: 7px;
+  background-color: #b10707;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 12px;
+  padding: 6px;
+  width: 300px;
+  height: 26px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+button:hover {
+  background-color: rgb(73, 211, 18);
+  font-family: Cambria;
+  font-size: larger;
+}
+
+button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+button span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+button:hover span {
+  padding-right: 25px;
+}
+
+button:hover span:after {
+  opacity: 1;
+  right: 0;
+}

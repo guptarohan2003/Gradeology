@@ -44,13 +44,7 @@ $(document).ready(function () {
                     var semester = course.find('.period-row').eq(semesterNum - 1);
                     var semesterid = semester[0].attributes['data-id'].value;
 
-                    var realCategory = [];
-
                     if (add) {
-
-                        // var semesterNum = new Date().getMonth() >= 7 ? 1 : 2;
-                        // var semester = course.find('.period-row').eq(semesterNum - 1);
-                        // var semesterid = semester[0].attributes['data-id'].value;
 
                         var categoryNames = [];
                         var categoryWeights = [];
@@ -60,9 +54,6 @@ $(document).ready(function () {
                         var addedTotalPoints = [];
                         var addedGivenPoints = [];
                         var actualCategory = [];
-
-                        // semester.find('.td-content-wrapper').find('span.rounded-grade')[0].innerHTML = '<span style="background-color:yellow">' + newGrade + '%</span>';
-                        // var categoryGradesStr = "";
 
                         //categories info
                         var categoriesRead = course.find('.category-row');
@@ -83,12 +74,8 @@ $(document).ready(function () {
                                 addedTotalPoints.push(0);
                                 addedGivenPoints.push(0);
                                 actualCategory.push(x);
-                                // console.log()
-                                realCategory.push(x.find('span.rounded-grade')[0].innerHTML);
                             }
                         }
-                        realCategory.push(semester.find('.td-content-wrapper').find('span.rounded-grade')[0].innerHTML);
-                        // console.log(realCategory);
 
                         getGradeValues(course, currentTotalPoints, currentGivenPoints, categoryParentId, courseNum, false);
 
@@ -336,7 +323,7 @@ function calculateGrade(actualCategory, courseNum, semester, categoryChoosen, sc
     }
     $('h2#grade' + courseNum).text("New Grade: " + newGrade);
     //
-    
+
     return newGrade;
 }
 

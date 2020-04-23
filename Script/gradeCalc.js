@@ -77,17 +77,57 @@ $(document).ready(function () {
                             }
                         }
 
-                        getGradeValues(course, currentTotalPoints, currentGivenPoints, categoryParentId, courseNum, false);
+                        var numEachCategory = getGradeValues(course, currentTotalPoints, currentGivenPoints, categoryParentId, courseNum);
 
                         var inputArea = createInputArea(categoryNames, courseNum);
                         var added = assignmentsDiv(courseNum);
                         course.prepend(inputArea);
                         course.prepend(added);
 
-                        //recalc button handler
-                        $('#recalc' + courseNum).click(function (el) {
-                            getGradeValues(course, currentTotalPoints, currentGivenPoints, categoryParentId, courseNum, true);
-                            calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints);                            // console.log(currentTotalPoints);
+                        // //recalc button handler
+                        // $('#recalc' + courseNum).click(function (el) {
+                        //     // getGradeValues(course, currentTotalPoints, currentGivenPoints, categoryParentId, courseNum, true);
+                        //     calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints);                            // console.log(currentTotalPoints);
+                        // });
+
+                        //change score inputs
+                        $('input#changeGiven-1').change(function (element) {
+                            var change = element.target.valueAsNumber - element.target.attributes['previousVal'].value;
+                            element.target.attributes['previousVal'].value = element.target.valueAsNumber
+                            var numAssig = element.target.attributes['divId'].value;
+                            var hidden = course.find('#itemInputs' + numAssig).find('button.deleteGiven' + courseNum)[0].attributes['hide'].value == 'no' ? false : true;
+
+                            if (!hidden) {
+                                var cat = -1;
+                                for (var i = 0; i < numEachCategory.length; i++) {
+                                    if (numAssig < numEachCategory[i] && cat == -1) {
+                                        cat = i;
+                                        break;
+                                    }
+                                }
+                                currentGivenPoints[cat] += change;
+                                calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints);
+                            }
+                        });
+
+                        //change total inputs
+                        $('input#changeTotal-1').change(function (element) {
+                            var change = element.target.valueAsNumber - element.target.attributes['previousVal'].value;
+                            element.target.attributes['previousVal'].value = element.target.valueAsNumber
+                            var numAssig = element.target.attributes['divId'].value;
+                            var hidden = course.find('#itemInputs' + numAssig).find('button.deleteGiven' + courseNum)[0].attributes['hide'].value == 'no' ? false : true;
+
+                            if(!hidden){
+                                var cat;
+                                for (var i = 0; i < numEachCategory.length; i++) {
+                                    if (numAssig < numEachCategory[i]) {
+                                        cat = i;
+                                        break;
+                                    }
+                                }
+                                currentTotalPoints[cat] += change;
+                                calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints);
+                            }
                         });
 
                         //hide button handler
@@ -98,14 +138,34 @@ $(document).ready(function () {
                             var buttonText = eleme.target.innerHTML;
                             var divStyle = $('div#itemInputs' + divIdOfAssig)[0].attributes['style'].value;
                             var hiddenColor = 'background-color:#DCDCDC;';
+                            var isHidden = eleme.target.attributes['hide'].value == 'no' ? false : true;
+                            // debugger
+                            var hideGiven = $('div#itemInputs' + divIdOfAssig).find('input#changeGiven-1')[0].valueAsNumber;
+                            var hideTotal = $('div#itemInputs' + divIdOfAssig).find('input#changeTotal-1')[0].valueAsNumber;
+                            var cat;
+                            for (var i = 0; i < numEachCategory.length; i++) {
+                                if (divIdOfAssig < numEachCategory[i]) {
+                                    cat = i;
+                                    break;
+                                }
+                            }
 
-                            if (buttonText.toString() == "Hide Assignment") {
+                            if (!isHidden) {
                                 $('div#itemInputs' + divIdOfAssig)[0].attributes['style'].value = hiddenColor + divStyle;
                                 eleme.target.innerHTML = "Assignment is Hidden from Grade Calculation";
+                                eleme.target.attributes['hide'].value = 'yes';
+
+                                currentGivenPoints[cat] -= hideGiven;
+                                currentTotalPoints[cat] -= hideTotal;
                             } else {
                                 $('div#itemInputs' + divIdOfAssig)[0].attributes['style'].value = divStyle.substring(hiddenColor.length);
                                 eleme.target.innerHTML = "Hide Assignment";
+                                eleme.target.attributes['hide'].value = 'no'
+
+                                currentGivenPoints[cat] += hideGiven;
+                                currentTotalPoints[cat] += hideTotal;
                             }
+                            calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints);
                         });
 
                         //add assignment button handler
@@ -117,7 +177,6 @@ $(document).ready(function () {
                             addedTotalPoints[categoryChoosen] += totalChoosen;
                             addedGivenPoints[categoryChoosen] += scoreChoosen;
 
-                            getGradeValues(course, currentTotalPoints, currentGivenPoints, categoryParentId, courseNum, true);
                             calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints);
                             addAssignment(categoryNames[categoryChoosen], scoreChoosen, totalChoosen, courseNum, categoryChoosen, actualCategory);
 
@@ -134,7 +193,6 @@ $(document).ready(function () {
                                 addedTotalPoints[category] -= total;
                                 addedGivenPoints[category] -= score;
 
-                                getGradeValues(course, currentTotalPoints, currentGivenPoints, categoryParentId, courseNum, true);
                                 calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints);
                             });
                         });
@@ -150,7 +208,6 @@ $(document).ready(function () {
                             itemInputs.remove();
                         //show old gradebook
                         course.find('td.grade-column').children().show();
-
                         //set old semester and category values and remove changed ones
                         semester.find('span.secondary-grade').show();
                         var del = semester.find('span.toBeDeleted' + courseNum);
@@ -175,58 +232,54 @@ $(document).ready(function () {
     });
 });
 
-function getGradeValues(course, currentTotalPoints, currentGivenPoints, categoryParentId, courseNum, recalculate) {
+function getGradeValues(course, currentTotalPoints, currentGivenPoints, categoryParentId, courseNum) {
     //reset current point arrays
-    for(var i = 0; i < currentGivenPoints.length; i++){
+    for (var i = 0; i < currentGivenPoints.length; i++) {
         currentGivenPoints[i] = 0;
         currentTotalPoints[i] = 0;
     }
 
-    var published = course.find('.item-row');
-    for (var i = 0; i < published.length; i++) {
-        // for (var i = 0; i < 1; i++) {
-        var x = published.eq(i);
-        var itemId = x[0].attributes['data-parent-id'].value;
-        for (var j = 0; j < categoryParentId.length; j++) {
+    var numEachCategory = [];
+    var numThisCategory = 0;
+
+    for (var j = 0; j < categoryParentId.length; j++) {
+        var published = course.find('.item-row');
+        for (var i = 0; i < published.length; i++) {
+            // for (var i = 0; i < 1; i++) {
+            var x = published.eq(i);
+            var itemId = x[0].attributes['data-parent-id'].value;
             if (categoryParentId[j] == itemId) {
+                numThisCategory++;
 
                 var itemTotalPoints = 0;
                 var itemGivenPoints = 0;
-                var iteminfo;
 
-                if (!recalculate) {
-                    iteminfo = x.find('.td-content-wrapper').eq(1)[0].innerText;
+                var iteminfo = x.find('.td-content-wrapper').eq(1)[0].innerText;
 
-                    var cut = iteminfo.indexOf('/');
-                    if (cut != -1) {
-                        var itemTotalPoints = parseFloat(iteminfo.substring(cut + 1));
-                        var cut2 = iteminfo.indexOf(' ');
-                        if (cut - cut2 != 1)
-                            itemGivenPoints = parseFloat(iteminfo.substring(cut2 + 1, cut));
-                        else
-                            itemGivenPoints = parseFloat(iteminfo.substring(0, cut));
-                    }
-                } else {
-                    var assigNotHidden = x.find('div#itemInputs' + i)[0].innerText.substring(0, 4) == 'Hide';
-                    if (assigNotHidden) {
-                        iteminfo = x.find('.itemInputs' + courseNum);
-                        itemGivenPoints = parseFloat(iteminfo.find('input#changeGiven-1')[0].value);
-                        itemTotalPoints = parseFloat(iteminfo.find('input#changeTotal-1')[0].value);
-                    }
+                var cut = iteminfo.indexOf('/');
+                if (cut != -1) {
+                    var itemTotalPoints = parseFloat(iteminfo.substring(cut + 1));
+                    var cut2 = iteminfo.indexOf(' ');
+                    if (cut - cut2 != 1)
+                        itemGivenPoints = parseFloat(iteminfo.substring(cut2 + 1, cut));
+                    else
+                        itemGivenPoints = parseFloat(iteminfo.substring(0, cut));
                 }
 
                 currentTotalPoints[j] += itemTotalPoints;
                 currentGivenPoints[j] += itemGivenPoints;
 
-                if (!recalculate) {
-                    x.find('td.grade-column').children().hide();
-                    //add editing boxes
-                    var divX = createEditInputs(itemGivenPoints, courseNum, itemTotalPoints, i);
-                    x.find('td.grade-column').append(divX);
-                }
+                x.find('td.grade-column').children().hide();
+                //add editing boxes
+                var divX = createEditInputs(itemGivenPoints, courseNum, itemTotalPoints, i);
+                x.find('td.grade-column').append(divX);
+
             }
         }
+        numEachCategory.push(numThisCategory);
     }
+
+    return numEachCategory;
 }
 
 function createEditInputs(itemGivenPoints, courseNum, itemTotalPoints, i) {
@@ -234,10 +287,11 @@ function createEditInputs(itemGivenPoints, courseNum, itemTotalPoints, i) {
     divX.setAttribute('id', 'itemInputs' + i);
     divX.setAttribute('class', 'itemInputs' + courseNum);
     divX.setAttribute('style', 'border-radius:6px; width:500px; padding:17px;float:right');
-    inputValueItems(divX, -1, 'changeGiven', 'changeTotal', itemGivenPoints.toString(), itemTotalPoints.toString(), '40px', false);
+    inputValueItems(divX, -1, 'changeGiven', 'changeTotal', itemGivenPoints.toString(), itemTotalPoints.toString(), '40px', false, i);
 
     var hide = document.createElement('button');
     hide.innerHTML = 'Hide Assignment';
+    hide.setAttribute('hide', 'no');
     hide.setAttribute('divId', i.toString());
     hide.setAttribute('class', 'deleteGiven' + courseNum);
     hide.setAttribute('style', "margin-left: 10px;margin-right: 10px;border-color:black;font-size:10px; padding: 1px 10px 1px 10px; border-radius:4px; height: 20px; background-color:Ivory; color:grey;");
@@ -251,15 +305,24 @@ function createEditInputs(itemGivenPoints, courseNum, itemTotalPoints, i) {
 function calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints) {
     var newGrade = 0;
 
+    var tempCategoryWeights = [];
+    for (var i = 0; i < categoryWeights.length; i++) {
+        tempCategoryWeights.push(categoryWeights[i]);
+    }
     //decimal new category grade;
     for (var i = 0; i < currentGivenPoints.length; i++) {
-        newGrade += (currentGivenPoints[i] +addedGivenPoints[i])/ (currentTotalPoints[i] + addedTotalPoints[i]) * categoryWeights[i] / 100;
+        var total = currentTotalPoints[i] + addedTotalPoints[i];
+        if (total != 0)
+            newGrade += (currentGivenPoints[i] + addedGivenPoints[i]) / total * categoryWeights[i] / 100;
+        else
+            tempCategoryWeights[i] = 0;
+
     }
 
     //fix grade if totalweights isnt 100%
     var totalWeight = 0;
     for (var i = 0; i < categoryWeights.length; i++) {
-        totalWeight += categoryWeights[i];
+        totalWeight += tempCategoryWeights[i];
     }
     if (totalWeight != 100) {
         newGrade = newGrade / totalWeight * 100;
@@ -284,7 +347,11 @@ function calculateGrade(actualCategory, courseNum, semester, categoryWeights, cu
     }
     //setting category grade values
     for (var i = 0; i < actualCategory.length; i++) {
-        var categoryGrade = (currentGivenPoints[i] +addedGivenPoints[i])/ (currentTotalPoints[i]+addedTotalPoints[i]) * 100;
+        var total = currentTotalPoints[i] + addedTotalPoints[i];
+        var categoryGrade = 0;
+        if (total != 0)
+            categoryGrade = (currentGivenPoints[i] + addedGivenPoints[i]) / total * 100;
+
         var cateString = '(' + categoryGrade.toFixed(2) + '%)';
 
         var change = actualCategory[i].find('span.toBeDeleted' + courseNum);
@@ -307,6 +374,7 @@ function calculateGrade(actualCategory, courseNum, semester, categoryWeights, cu
 function addAssignment(category, score, total, courseNum, categoryChoosen, actualCategory) {
     var itemDiv = document.createElement('div');
     itemDiv.setAttribute('class', 'addedItem');
+    itemDiv.setAttribute('style', 'width:400px');
 
     var assig = document.createElement('p');
     assig.setAttribute('categorynum', categoryChoosen.toString());
@@ -315,7 +383,8 @@ function addAssignment(category, score, total, courseNum, categoryChoosen, actua
     assig.setAttribute('style', 'color:black; font-size:10.5px');
     assig.innerHTML = "- Category: " + category + " &nbsp;&nbsp;Score: " + score + " &nbsp;&nbsp;Total: " + total;
 
-    itemDiv.appendChild(assig);
+    itemDiv.append(assig);
+    // inputValueItems(itemDiv, -1, 'changeAdded', 'totalAdded', score.toString(), total.toString(), '40px', false, 0);
 
     var assignmentsDiv = $('div#addedAssignments' + courseNum);
     assignmentsDiv.append(itemDiv);
@@ -323,7 +392,7 @@ function addAssignment(category, score, total, courseNum, categoryChoosen, actua
 
 function assignmentsDiv(courseNum) {
     var added = document.createElement('div');
-    added.setAttribute('style', 'width:560px;border-radius: 6px;background-color:#5bc159; padding:6px; display:inline-block; margin-top:-10px');
+    added.setAttribute('style', 'width:500px;border-radius: 6px;background-color:#5bc159; padding:6px; display:inline-block; margin-top:-10px');
     added.setAttribute('id', 'addedAssignments' + courseNum);
 
     var grade = document.createElement('h2');
@@ -343,10 +412,10 @@ function assignmentsDiv(courseNum) {
 function createInputArea(categoryNames, courseNum) {
     var div1 = document.createElement('div');
     div1.setAttribute('id', 'input' + courseNum);
-    div1.setAttribute('style', 'width:560px;height:40px;border-radius: 6px;background-color:#5bc159; padding:7px 7px 7px 16px; margin-top:2px; margin-bottom:7px');
+    div1.setAttribute('style', 'width:500px;height:40px;border-radius: 6px;background-color:#5bc159; padding:7px 7px 7px 16px; margin-top:2px; margin-bottom:7px');
 
     categorySelect(div1, categoryNames, courseNum);
-    inputValueItems(div1, courseNum, 'score', 'total', ' Score', ' Total', '70px', true);
+    inputValueItems(div1, courseNum, 'score', 'total', ' Score', ' Total', '70px', true, 0);
 
     var enter = document.createElement('button');
     enter.innerHTML = 'Add Assignment';
@@ -354,26 +423,31 @@ function createInputArea(categoryNames, courseNum) {
     enter.setAttribute('style', "border-color:black;font-size:10px; padding: 1px 10px 1px 10px; border-radius:4px; height: 20px; background-color:Ivory; color:grey;");
     div1.appendChild(enter);
 
-    var recalc = document.createElement('button');
-    recalc.innerHTML = 'Recalculate Grade';
-    recalc.setAttribute('id', 'recalc' + courseNum);
-    recalc.setAttribute('style', "margin-left: 10px;border-color:black;font-size:10px; padding: 1px 10px 1px 10px; border-radius:4px; height: 20px; background-color:Ivory; color:grey;");
-    div1.appendChild(recalc);
+    // var recalc = document.createElement('button');
+    // recalc.innerHTML = 'Recalculate Grade';
+    // recalc.setAttribute('id', 'recalc' + courseNum);
+    // recalc.setAttribute('style', "margin-left: 10px;border-color:black;font-size:10px; padding: 1px 10px 1px 10px; border-radius:4px; height: 20px; background-color:Ivory; color:grey;");
+    // div1.appendChild(recalc);
 
     return div1;
 }
 
-function inputValueItems(parent, courseNum, id1, id2, ph1, ph2, width, adding) {
+function inputValueItems(parent, courseNum, id1, id2, ph1, ph2, width, adding, i) {
     var addOrEdit = 'value';
     if (adding) addOrEdit = 'placeholder';
+
     var score = document.createElement('input');
     score.setAttribute('id', id1 + courseNum);
+    if (!adding) score.setAttribute('divId', i.toString());
+    if (!adding) score.setAttribute('previousVal', ph1);
     score.setAttribute('type', 'number');
     score.setAttribute(addOrEdit, ph1);
     score.setAttribute('style', "font-size:11px; margin-right:10px; border-radius: 5px;width:" + width + "; height: 20px; background-color:Ivory");
 
     var total = document.createElement('input');
     total.setAttribute('id', id2 + courseNum);
+    if (!adding) total.setAttribute('divId', i.toString());
+    if (!adding) total.setAttribute('previousVal', ph2);
     total.setAttribute('type', 'number');
     total.setAttribute(addOrEdit, ph2);
     total.setAttribute('style', "font-size:11px; margin-right:10px; border-radius: 5px;width:" + width + "; height: 20px; background-color:Ivory");

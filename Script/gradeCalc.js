@@ -173,15 +173,17 @@ $(document).ready(function () {
                     //add original text when changed
                     var parentDiv = course.find('#itemInputs' + numAssig);
                     var origGiven = parentDiv[0].attributes['originalGiven'].value;
+                    var origTotal = parentDiv[0].attributes['originalTotal'].value;
+                    var currentTotal = parentDiv.find('input#changeTotal-1')[0].attributes['previousVal'].value;
+                    
                     var findSpan = parentDiv.find('span#originalStr');
                     if (findSpan.length == 0 && currentNum != origGiven) {
-                        var origTotal = parentDiv[0].attributes['originalTotal'].value;
                         var orig = document.createElement('span');
                         orig.setAttribute('id', 'originalStr');
                         orig.innerHTML = 'Original: ' + origGiven + ' / ' + origTotal;
                         parentDiv.append(orig);
                     } else {
-                        if (currentNum == origGiven)
+                        if (currentNum == origGiven && currentTotal == origTotal)
                             findSpan.remove();
                     }
 
@@ -200,18 +202,21 @@ $(document).ready(function () {
                     var cat = element.target.attributes['cat'].value;
                     var hidden = course.find('#itemInputs' + numAssig).find('button.deleteGiven' + courseNum)[0].attributes['hide'].value == 'no' ? false : true;
 
+                    // debugger
                     //add original text when changed
                     var parentDiv = course.find('#itemInputs' + numAssig);
                     var origTotal = parentDiv[0].attributes['originalTotal'].value;
+                    var currentGiven = parentDiv.find('input#changeGiven-1')[0].attributes['previousVal'].value;
+                    var origGiven = parentDiv[0].attributes['originalGiven'].value;
                     var findSpan = parentDiv.find('span#originalStr');
+
                     if (findSpan.length == 0 && currentNum != origTotal) {
-                        var origGiven = parentDiv[0].attributes['originalGiven'].value;
                         var orig = document.createElement('span');
                         orig.setAttribute('id', 'originalStr');
                         orig.innerHTML = 'Original: ' + origGiven + ' / ' + origTotal;
                         parentDiv.append(orig);
                     } else {
-                        if (currentNum == origTotal)
+                        if (currentNum == origTotal && currentGiven == origGiven)
                             findSpan.remove();
                     }
 

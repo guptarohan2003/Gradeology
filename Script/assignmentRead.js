@@ -27,6 +27,10 @@ $(document).ready(function () {
                             str = str.substring(0, cut - 1);
 
                             assignments.push(str);
+                            if(assignments.length > dates.length){
+                                dates.push(dates[dates.length - 1]);
+                                months.push(months[months.length - 1]);
+                            } 
                             //console.log(str.substring(0, cut - 1));
                         } else {
                             var assigDate = dummy[0].outerHTML;
@@ -64,17 +68,12 @@ $(document).ready(function () {
                             }
                             dates.push(duedate);
                             months.push(monthNum);
-                            // dates.push(monthNum);
-                            // console.log(monthNum)
                         }
                     });
 
                     var date = new Date();
 
-                    // date = new Date(2020, 7, 1, 1, 1, 1, 1);
-
                     //dayofweek
-                    // date.setDate(date.getDate() - 1);
                     var due = date.getDay();
                     var originalDate = date.getDate();
                     //set upcoming due date
@@ -87,7 +86,6 @@ $(document).ready(function () {
 
                     var day = date.getDate();
                     var month = date.getMonth();
-
                     var i;
                     var today = [];
                     for (i = 0; i < dates.length; i++) {
@@ -96,11 +94,6 @@ $(document).ready(function () {
                         }
                         else if (month > months[i]) today.push(assignments[i]);
                     }
-
-                    // console.log(assignments);
-                    // console.log(today);
-                    // console.log(dates);
-                    // console.log(months);
 
                     //set numAssignment for upcoming duedate
                     setNumAssignments(today, true);
@@ -190,8 +183,6 @@ function printTime(day, due) {
         var at7 = parseInt(items.atime7) * parseInt(items.numAssigments7);
 
         var totalZ = at1 + at2 + at3 + at4 + at5 + at6 + at7;
-        // var hrs = Math.floor(totalZ / 60);
-        // var min = totalZ % 60;
 
         at1 = parseInt(items.atime1) * parseInt(items.numTodayAssigments1);
         at2 = parseInt(items.atime2) * parseInt(items.numTodayAssigments2);

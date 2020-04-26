@@ -1,2 +1,2 @@
-# Timeology
-Timeology is a chrome extension for the website schoology. It is a tool that utilizes user input to provide users with a personalized estimate of how much work they have left based on the number assignments they have on schoology. 
+# Gradeology
+Gradeology is a chrome extension for the website schoology. It is a tool that utilizes user input to provide users with a personalized estimate of how much work they have left based on the number assignments they have on schoology. 

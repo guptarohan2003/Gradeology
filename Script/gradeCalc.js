@@ -1,15 +1,5 @@
 $(document).ready(function () {
-    var arr = [
-        'enabled',
-        'class1',
-        'class2',
-        'class3',
-        'class4',
-        'class5',
-        'class6',
-        'class7'
-    ];
-    chrome.storage.sync.get(arr, function (val) {
+    chrome.storage.sync.get(['enabled', 'class1', 'class2', 'class3', 'class4', 'class5', 'class6', 'class7'], function (val) {
         // if (val.enabled == 'true') {
             var buttonDiv = createButtonDiv(val.class1, val.class2, val.class3, val.class4, val.class5, val.class6, val.class7);
             $('#center-top').append(buttonDiv);
@@ -26,7 +16,7 @@ $(document).ready(function () {
                         var weight = ele.target.parentElement.children[1].valueAsNumber;
                         var desiredG = ele.target.parentElement.children[2].valueAsNumber;
                         var neededGrade = (desiredG - currentG * (100 - weight) / 100) * 100 / weight;
-                        ele.target.parentElement.children[4].innerHTML = 'Grade Needed: '+neededGrade.toFixed(2)+'%';
+                        ele.target.parentElement.children[4].innerHTML = 'Grade Needed: ' + neededGrade.toFixed(2) + '%';
                     });
                 } else {
                     $('#finalGradeDiv').find('div#finalCalc').remove();
@@ -128,10 +118,14 @@ $(document).ready(function () {
                         addedGivenPoints[categoryChoosen] += scoreChoosen;
 
                         calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints);
-                        addAssignment(categoryNames[categoryChoosen], scoreChoosen, totalChoosen, courseNum, categoryChoosen);
+                        addAssignment(categoryNames[categoryChoosen], scoreChoosen, totalChoosen, courseNum, categoryChoosen, semester);
 
+                        $('input#changeGiven-2').change(function (element) {
+                            console.log('in');
+                        });
                         //changed score in added assignment handler
                         $('input#changeGivenAdd-1').change(function (element) {
+                            // debugger
                             var change = element.target.valueAsNumber - element.target.attributes['previousVal'].value;
                             element.target.attributes['previousVal'].value = element.target.valueAsNumber
                             var cat = element.target.attributes['cat'].value;
@@ -141,6 +135,7 @@ $(document).ready(function () {
                         });
                         //changed total in added assignment handler
                         $('input#changeTotalAdd-1').change(function (element) {
+                            // debugger
                             var change = element.target.valueAsNumber - element.target.attributes['previousVal'].value;
                             element.target.attributes['previousVal'].value = element.target.valueAsNumber
                             var cat = element.target.attributes['cat'].value;
@@ -154,8 +149,9 @@ $(document).ready(function () {
                             eleme.stopPropagation();
                             eleme.stopImmediatePropagation();
 
-                            var score = eleme.target.parentElement.children[0].value
-                            var total = eleme.target.parentElement.children[1].value
+                            // debugger
+                            var score = eleme.target.parentElement.children[1].value
+                            var total = eleme.target.parentElement.children[2].value
                             var category = eleme.target.attributes['categorynum'].value;
 
                             eleme.target.parentElement.remove();
@@ -171,7 +167,7 @@ $(document).ready(function () {
                         var currentNum = element.target.valueAsNumber;
                         var change = element.target.valueAsNumber - element.target.attributes['previousVal'].value;
                         // element.target.attributes['previousVal'].value = element.target.valueAsNumber
-                        var numAssig = element.target.attributes['divId'].value;
+                        var numAssig = element.target.attributes['divid'].value;
                         var cat = element.target.attributes['cat'].value;
                         var hidden = course.find('#itemInputs' + numAssig).find('button.deleteGiven' + courseNum)[0].attributes['hide'].value == 'no' ? false : true;
 
@@ -407,14 +403,18 @@ function calculateGrade(actualCategory, courseNum, semester, categoryWeights, cu
     $('h2#grade' + courseNum).text("New Grade: " + newGrade);
 }
 
-function addAssignment(category, score, total, courseNum, categoryChoosen) {
+function addAssignment(category, score, total, courseNum, categoryChoosen, semester) {
     var itemDiv = document.createElement('div');
     itemDiv.setAttribute('class', 'addedItem');
-    itemDiv.setAttribute('style', 'width:400px; padding:10px');
+    itemDiv.setAttribute('style', 'width:460px; padding:10px;');
 
     var assig = document.createElement('span');
-    assig.setAttribute('style', 'color:black; font-size:11px; margin-left:20px');
-    assig.innerHTML = "Category: " + category;
+    assig.setAttribute('style', 'color:black; font-size:11px; margin-left:20px; margin-right:30px;color:#e60f0f');
+    assig.innerHTML = "*** Gradeology Assignment ***";
+
+    var cate = document.createElement('span');
+    cate.setAttribute('style', 'color:black; font-size:11px; margin-left:30px; margin-right:30px;color:#e60f0f');
+    cate.innerHTML = "Category: <i>" + category;
 
     var del = document.createElement('button');
     del.innerHTML = 'Delete Assignment';
@@ -422,13 +422,12 @@ function addAssignment(category, score, total, courseNum, categoryChoosen) {
     del.setAttribute('id', 'deleteAdded' + courseNum);
     del.setAttribute('style', "margin-left: 10px;border-color:black;font-size:10px; padding: 1px 10px 1px 10px; border-radius:4px; height: 20px; background-color:Ivory; color:grey;");
 
+    itemDiv.append(assig);
     inputValueItems(itemDiv, '-1', 'changeGivenAdd', 'changeTotalAdd', score, total, '40px', false, categoryChoosen.toString(), 0);
     itemDiv.append(del);
-    itemDiv.append(assig);
+    itemDiv.append(cate);
 
-
-    var assignmentsDiv = $('div#addedAssignments' + courseNum);
-    assignmentsDiv.append(itemDiv);
+    semester.after(itemDiv);
 }
 
 function assignmentsDiv(courseNum) {
@@ -442,10 +441,10 @@ function assignmentsDiv(courseNum) {
     grade.innerHTML = 'New Grade: --';
     added.appendChild(grade);
 
-    var head = document.createElement('h2');
-    head.innerHTML = 'Added Assignments: (click anywhere on an added assignment to delete!)';
-    head.setAttribute('style', "font-size:11px; color:white");
-    added.appendChild(head);
+    // var head = document.createElement('h2');
+    // head.innerHTML = 'Added Assignments: (click anywhere on an added assignment to delete!)';
+    // head.setAttribute('style', "font-size:11px; color:white");
+    // added.appendChild(head);
 
     return added;
 }
@@ -579,7 +578,7 @@ function finalCalcDiv() {
     var sp = document.createElement('span');
     sp.setAttribute('style', 'width:70px; height:24px; color:white; font-size:12px; margin-left:15px; background-color:#00ca19; padding:10px; border-radius:6px');
     sp.innerHTML = 'Grade Needed: ';
-    
+
     div.appendChild(current);
     div.appendChild(weight);
     div.appendChild(desired);
@@ -589,7 +588,7 @@ function finalCalcDiv() {
     return div;
 }
 
-function createButtonDiv(class1, class2, class3, class4, class5, class6, class7){
+function createButtonDiv(class1, class2, class3, class4, class5, class6, class7) {
     var buttonDiv = document.createElement('div');
     buttonDiv.setAttribute('id', 'buttonDiv');
     buttonDiv.setAttribute('style', 'padding-left:20px');

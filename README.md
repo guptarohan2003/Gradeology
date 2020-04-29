@@ -1,2 +1,13 @@
 # Gradeology
-Gradeology is a chrome extension for the website schoology. It is a tool that utilizes user input to provide users with a personalized estimate of how much work they have left based on the number assignments they have on schoology.
+Gradeology enhances the Schoology interface and features tools for Time Management and a Grade Editor and Calculator.
+
+*Choose a Class:*
+![Choosing the Class](images/classChoose.png)
+
+
+*Editting a Class:*
+![Editting the Class](images/classEdit.png)
+
+
+*Time Management:*
+![Time Text](images/timeText.png)

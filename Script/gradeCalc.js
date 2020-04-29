@@ -84,8 +84,8 @@ $(document).ready(function () {
 
                         var hiddenColor = 'background-color:#DCDCDC;';
                         var isHidden = eleme.target.attributes['hide'].value == 'no' ? false : true;
-                        var hideGiven = $('div#itemInputs' + divIdOfAssig).find('input#changeGiven-1')[0].valueAsNumber;
-                        var hideTotal = $('div#itemInputs' + divIdOfAssig).find('input#changeTotal-1')[0].valueAsNumber;
+                        var hideGiven = $('div#itemInputs' + divIdOfAssig).find('input#changeGiven'+courseNum)[0].valueAsNumber;
+                        var hideTotal = $('div#itemInputs' + divIdOfAssig).find('input#changeTotal'+courseNum)[0].valueAsNumber;
                         var cat = eleme.target.attributes['cat'].value;
 
                         if (!isHidden) {
@@ -308,7 +308,7 @@ function createEditInputs(itemGivenPoints, courseNum, itemTotalPoints, i, j) {
     var divX = document.createElement('div');
     divX.setAttribute('id', 'itemInputs' + i);
     divX.setAttribute('class', 'itemInputs' + courseNum);
-    divX.setAttribute('style', 'border-radius:6px; width:500px; padding:17px;float:right');
+    divX.setAttribute('style', 'border-radius:6px; width:450px; padding:17px;float:right');
     divX.setAttribute('originalGiven', itemGivenPoints);
     divX.setAttribute('originalTotal', itemTotalPoints);
 
@@ -428,7 +428,7 @@ function addAssignment(category, score, total, courseNum, categoryChoosen, semes
 
 function assignmentsDiv(courseNum) {
     var added = document.createElement('div');
-    added.setAttribute('style', 'width:420px;border-radius: 6px;background-color:#a10ed2; padding:6px; display:inline-block; margin-top:-10px');
+    added.setAttribute('style', 'width:420px;border-radius: 6px;background-color:#ec0b0b; padding:6px; display:inline-block; margin-top:-10px');
     added.setAttribute('id', 'addedAssignments' + courseNum);
 
     var grade = document.createElement('h2');
@@ -443,7 +443,7 @@ function assignmentsDiv(courseNum) {
 function createInputArea(categoryNames, courseNum) {
     var div1 = document.createElement('div');
     div1.setAttribute('id', 'input' + courseNum);
-    div1.setAttribute('style', 'width:420px;height:40px;border-radius: 6px;background-color:#0925e8; padding:7px 7px 7px 16px; margin-top:2px; margin-bottom:7px');
+    div1.setAttribute('style', 'width:420px;height:40px;border-radius: 6px;background-color:#ec0b0b; padding:7px 7px 7px 16px; margin-top:2px; margin-bottom:7px');
 
     categorySelect(div1, categoryNames, courseNum);
     inputValueItems(div1, courseNum, 'score', 'total', ' Score', ' Total', '53px', true, 0, 0);

@@ -3,7 +3,7 @@
     "name": "Gradeology for Schoology",
     "short_name": "Gradeology",
     "version": "1.0.0",
-    "description": "Gradeology be fire bruh.",
+    "description": "Gradeology enhances the Schoology interface and features tools for Time Management and a Grade Editor and Calculator",
     "permissions": [
         "declarativeContent",
         "storage",
@@ -17,6 +17,10 @@
         "default_popup": "popup.html"
     },
     "icons": {
+        "16": "images/icon16.png",
+        "32": "images/icon32.png",
+        "48": "images/icon48.png",
+        "128": "images/icon128.png"
     },
     "content_scripts": [
         {

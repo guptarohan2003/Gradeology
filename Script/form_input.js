@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'class5',
         'class6',
         'class7'
-    ];
+    ]; 
     //set courses on form
     chrome.storage.sync.get(class_array, function(val){
         document.getElementById("A").innerHTML = val.class1;

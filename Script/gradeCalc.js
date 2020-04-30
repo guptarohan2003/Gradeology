@@ -10,7 +10,7 @@ $(document).ready(function () {
                 if (str == "Enable Final Calculator") {
                     $('#finalGradeDiv').append(finalCalcDiv());
                     element.target.innerHTML = "Disable Final Calculator";
-                    //calculate final grades handler
+                    //calculate final grades handler 
                     $('button#calcFinalGrade').click(function (ele) {
                         var currentG = ele.target.parentElement.children[0].valueAsNumber;
                         var weight = ele.target.parentElement.children[1].valueAsNumber;
@@ -83,21 +83,21 @@ $(document).ready(function () {
                         var divStyle = $('div#itemInputs' + divIdOfAssig)[0].attributes['style'].value;
 
                         var hiddenColor = 'background-color:#DCDCDC;';
-                        var isHidden = eleme.target.attributes['hide'].value == 'no' ? false : true;
+                        var isHidden = eleme.target.attributes['hide'].value != 'no';
                         var hideGiven = $('div#itemInputs' + divIdOfAssig).find('input#changeGiven'+courseNum)[0].valueAsNumber;
                         var hideTotal = $('div#itemInputs' + divIdOfAssig).find('input#changeTotal'+courseNum)[0].valueAsNumber;
                         var cat = eleme.target.attributes['cat'].value;
 
                         if (!isHidden) {
                             $('div#itemInputs' + divIdOfAssig)[0].attributes['style'].value = hiddenColor + divStyle;
-                            eleme.target.innerHTML = "Include Assignment in Calculation";
+                            eleme.target.innerHTML = "Include Assignment";
                             eleme.target.attributes['hide'].value = 'yes';
 
                             currentGivenPoints[cat] -= hideGiven;
                             currentTotalPoints[cat] -= hideTotal;
                         } else {
                             $('div#itemInputs' + divIdOfAssig)[0].attributes['style'].value = divStyle.substring(hiddenColor.length);
-                            eleme.target.innerHTML = "Exclude Assignment from Calculation";
+                            eleme.target.innerHTML = "Exclude Assignment";
                             eleme.target.attributes['hide'].value = 'no'
 
                             currentGivenPoints[cat] += hideGiven;
@@ -159,18 +159,18 @@ $(document).ready(function () {
                     $('input#changeGiven'+courseNum).change(function (element) {
                         var currentNum = element.target.valueAsNumber;
                         var change = element.target.valueAsNumber - element.target.attributes['previousVal'].value;
-                        // element.target.attributes['previousVal'].value = element.target.valueAsNumber
+                        element.target.attributes['previousVal'].value = element.target.valueAsNumber
                         var numAssig = element.target.attributes['divid'].value;
                         var cat = element.target.attributes['cat'].value;
-                        var hidden = course.find('#itemInputs' + numAssig).find('button.deleteGiven' + courseNum)[0].attributes['hide'].value == 'no' ? false : true;
+                        var hidden = course.find('#itemInputs' + numAssig).find('button.deleteGiven' + courseNum)[0].attributes['hide'].value != 'no';
 
                         //add original text when changed
                         var parentDiv = course.find('#itemInputs' + numAssig);
                         var origGiven = parentDiv[0].attributes['originalGiven'].value;
                         var origTotal = parentDiv[0].attributes['originalTotal'].value;
                         var currentTotal = parentDiv.find('input#changeTotal'+courseNum)[0].attributes['previousVal'].value;
-
                         var findSpan = parentDiv.find('span#originalStr');
+
                         if (findSpan.length == 0 && currentNum != origGiven) {
                             var orig = document.createElement('span');
                             orig.setAttribute('id', 'originalStr');
@@ -182,26 +182,26 @@ $(document).ready(function () {
                         }
 
                         if (!hidden) {
-                            element.target.attributes['previousVal'].value = element.target.valueAsNumber;
                             currentGivenPoints[cat] += change;
                             calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints);
                         }
+
                     });
 
                     //change given total handler
                     $('input#changeTotal'+courseNum).change(function (element) {
                         var currentNum = element.target.valueAsNumber;
                         var change = element.target.valueAsNumber - element.target.attributes['previousVal'].value;
-                        // element.target.attributes['previousVal'].value = element.target.valueAsNumber
+                        element.target.attributes['previousVal'].value = element.target.valueAsNumber
                         var numAssig = element.target.attributes['divId'].value;
                         var cat = element.target.attributes['cat'].value;
-                        var hidden = course.find('#itemInputs' + numAssig).find('button.deleteGiven' + courseNum)[0].attributes['hide'].value == 'no' ? false : true;
+                        var hidden = course.find('#itemInputs' + numAssig).find('button.deleteGiven' + courseNum)[0].attributes['hide'].value != 'no';
 
                         //add original text when changed
                         var parentDiv = course.find('#itemInputs' + numAssig);
+                        var origGiven = parentDiv[0].attributes['originalGiven'].value;
                         var origTotal = parentDiv[0].attributes['originalTotal'].value;
                         var currentGiven = parentDiv.find('input#changeGiven'+courseNum)[0].attributes['previousVal'].value;
-                        var origGiven = parentDiv[0].attributes['originalGiven'].value;
                         var findSpan = parentDiv.find('span#originalStr');
 
                         if (findSpan.length == 0 && currentNum != origTotal) {
@@ -215,10 +215,10 @@ $(document).ready(function () {
                         }
 
                         if (!hidden) {
-                            element.target.attributes['previousVal'].value = element.target.valueAsNumber;
                             currentTotalPoints[cat] += change;
                             calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints);
                         }
+
                     });
 
                 } else {
@@ -308,14 +308,14 @@ function createEditInputs(itemGivenPoints, courseNum, itemTotalPoints, i, j) {
     var divX = document.createElement('div');
     divX.setAttribute('id', 'itemInputs' + i);
     divX.setAttribute('class', 'itemInputs' + courseNum);
-    divX.setAttribute('style', 'border-radius:6px; width:450px; padding:17px;float:right');
+    divX.setAttribute('style', 'border-radius:6px; width:410px; padding:17px;float:right');
     divX.setAttribute('originalGiven', itemGivenPoints);
     divX.setAttribute('originalTotal', itemTotalPoints);
 
     inputValueItems(divX, courseNum, 'changeGiven', 'changeTotal', itemGivenPoints.toString(), itemTotalPoints.toString(), '40px', false, j, i);
 
     var hide = document.createElement('button');
-    hide.innerHTML = 'Exclude Assignment from Calculation';
+    hide.innerHTML = 'Exclude Assignment';
     hide.setAttribute('hide', 'no');
     hide.setAttribute('cat', j.toString());
     hide.setAttribute('divId', i.toString());

@@ -1,7 +1,7 @@
 # Gradeology
-Gradeology enhances the Schoology interface and features tools for Time Management and a Grade Editor and Calculator.
+Gradeology enhances the Schoology interface and features tools for Time Management and a Grade Editor and Calculator. 
 
-*Choose a Class:*
+*Choose a Class:* 
 ![Choosing the Class](images/classChoose.png)
 
 

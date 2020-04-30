@@ -1,7 +1,7 @@
 $(document).ready(function () {
     chrome.storage.sync.get(['coursesRead', 'enabled'], function (val) {
         var bool = val.coursesRead;
-        var enable = val.enabled;
+        var enable = val.enabled; 
         if (bool == 'true' && enable == 'true') {
             $.ajax({
                 type: "GET",

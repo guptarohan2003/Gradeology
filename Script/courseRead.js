@@ -8,7 +8,7 @@ $(document).ready(function () {
         if(str != "Flex Studies"){
             courses.push(str);
         }
-    });
+    }); 
 
     //store class in chrome sync storage
     if(courses[0])

@@ -1,5 +1,5 @@
 chrome.runtime.onInstalled.addListener(function (details) {
-    //set default assignments time to 20
+    //set default assignments time to 20 
     chrome.storage.sync.set({ atime1: '20' });
     chrome.storage.sync.set({ atime2: '20' });
     chrome.storage.sync.set({ atime3: '20' });

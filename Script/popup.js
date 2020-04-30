@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById("enableGradeology").innerHTML = "Enable Gradeology";
             document.getElementById("go_to_form").style.display = "none";
         }
-    });
+    }); 
 
     document.getElementById("enableGradeology").addEventListener("click", function () {
         if (document.getElementById("enableGradeology").innerHTML == 'Enable Gradeology') {

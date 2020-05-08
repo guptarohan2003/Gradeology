@@ -46,6 +46,10 @@ $(document).ready(function () {
                     var addedGivenPoints = [];
                     var actualCategory = [];
 
+                    //original grade
+                    var originalGrade = semester[0].children[1].innerText;
+                    originalGrade = originalGrade.substring(originalGrade.indexOf('(') + 1, originalGrade.length - 1);
+
                     //categories info
                     var categoriesRead = course.find('.category-row');
                     for (var i = 0; i < categoriesRead.length; i++) {
@@ -71,7 +75,7 @@ $(document).ready(function () {
                     getGradeValues(course, currentTotalPoints, currentGivenPoints, categoryParentId, courseNum);
 
                     course.prepend(createInputArea(categoryNames, courseNum));
-                    course.prepend(assignmentsDiv(courseNum));
+                    course.prepend(originalGradeHeader(courseNum, originalGrade));
 
                     //--------------------HANDLERS--------------------------//
 
@@ -228,7 +232,7 @@ $(document).ready(function () {
                     course.find('div#input' + courseNum).remove();
 
                     //remove added text -top most div
-                    course.find('div#addedAssignments' + courseNum).remove();
+                    course.find('div#originalGradeDiv' + courseNum).remove();
 
                     //remove edit features for each publish assig
                     var itemInputs = course.find('.itemInputs' + courseNum);
@@ -394,9 +398,6 @@ function calculateGrade(actualCategory, courseNum, semester, categoryWeights, cu
             actualCategory[i].find('span.alpha-grade').hide();
         }
     }
-
-    //set grade header value
-    $('h2#grade' + courseNum).text("New Grade: " + newGrade);
 }
 
 function addAssignment(category, score, total, courseNum, categoryChoosen, semester) {
@@ -426,15 +427,15 @@ function addAssignment(category, score, total, courseNum, categoryChoosen, semes
     semester.after(itemDiv);
 }
 
-function assignmentsDiv(courseNum) {
+function originalGradeHeader(courseNum, originalGrade) {
     var added = document.createElement('div');
     added.setAttribute('style', 'width:420px;border-radius: 6px;background-color:#ec0b0b; padding:6px; display:inline-block; margin-top:-10px');
-    added.setAttribute('id', 'addedAssignments' + courseNum);
+    added.setAttribute('id', 'originalGradeDiv' + courseNum);
 
     var grade = document.createElement('h2');
     grade.setAttribute('id', 'grade' + courseNum);
     grade.setAttribute('style', "font-size:14px; color:white");
-    grade.innerHTML = 'New Grade: --';
+    grade.innerHTML = 'Original Grade: ' + originalGrade;
     added.appendChild(grade);
 
     return added;
@@ -595,6 +596,5 @@ function createButtonDiv(class1, class2, class3, class4, class5, class6, class7)
     buttonDiv.append(createButton(class6, 6));
     buttonDiv.append(createButton(class7, 7));
     buttonDiv.appendChild(enableFinalCalc());
-
     return buttonDiv;
 }

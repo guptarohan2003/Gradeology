@@ -44,19 +44,7 @@ $(document).ready(function () {
                             var duedate = assigDate.substring(end + 1);
                             var duemonth = assigDate.substring(0, end);
                             // console.log(duemonth);
-                            var month = [];
-                            month[0] = "January";
-                            month[1] = "February";
-                            month[2] = "March";
-                            month[3] = "April";
-                            month[4] = "May";
-                            month[5] = "June";
-                            month[6] = "July";
-                            month[7] = "August";
-                            month[8] = "September";
-                            month[9] = "October";
-                            month[10] = "November";
-                            month[11] = "December";
+                            var month = ["January", "Febuary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
                             var monthNum = -1;
                             var i;
                             for (i = 0; i < 12; i++) {
@@ -95,12 +83,16 @@ $(document).ready(function () {
                         else if (month > months[i]) today.push(assignments[i]);
                     }
 
-                    //set numAssignment for upcoming duedate
-                    setNumAssignments(today, true);
-                    //set numTotalAssignment for total
-                    setNumAssignments(assignments, false);
+                    //num of each assignment by class
+                    var numAssignmentsTotal = new Array(7);
+                    var numAssignmentsToday = new Array(7);
 
-                    printTime(day, due);
+                    //set numAssignment for upcoming duedate
+                    setNumAssignments(today, numAssignmentsToday);
+                    //set numTotalAssignment for total
+                    setNumAssignments(assignments, numAssignmentsTotal);
+
+                    printTime(day, due, numAssignmentsTotal, numAssignmentsToday);
                 },
                 dataType: "json"
             });
@@ -109,7 +101,7 @@ $(document).ready(function () {
 
 });
 
-function setNumAssignments(assignments, today) {
+function setNumAssignments(assignments, array) {
     var class_array = [
         'class1',
         'class2',
@@ -120,43 +112,16 @@ function setNumAssignments(assignments, today) {
         'class7'
     ];
     chrome.storage.sync.get(class_array, function (val) {
-        var a = getOccurences(val.class1, assignments).toString();
-        var b = getOccurences(val.class2, assignments).toString();
-        var c = getOccurences(val.class3, assignments).toString();
-        var d = getOccurences(val.class4, assignments).toString();
-        var e = getOccurences(val.class5, assignments).toString();
-        var f = getOccurences(val.class6, assignments).toString();
-        var g = getOccurences(val.class7, assignments).toString();
+        var occurencesArr = [getOccurences(val.class1, assignments), getOccurences(val.class2, assignments), getOccurences(val.class3, assignments), getOccurences(val.class4, assignments), getOccurences(val.class5, assignments), getOccurences(val.class6, assignments), getOccurences(val.class7, assignments)];
 
-        if (!today) {
-            chrome.storage.sync.set({ numAssigments1: a });
-            chrome.storage.sync.set({ numAssigments2: b });
-            chrome.storage.sync.set({ numAssigments3: c });
-            chrome.storage.sync.set({ numAssigments4: d });
-            chrome.storage.sync.set({ numAssigments5: e });
-            chrome.storage.sync.set({ numAssigments6: f });
-            chrome.storage.sync.set({ numAssigments7: g });
-        } else {
-            chrome.storage.sync.set({ numTodayAssigments1: a });
-            chrome.storage.sync.set({ numTodayAssigments2: b });
-            chrome.storage.sync.set({ numTodayAssigments3: c });
-            chrome.storage.sync.set({ numTodayAssigments4: d });
-            chrome.storage.sync.set({ numTodayAssigments5: e });
-            chrome.storage.sync.set({ numTodayAssigments6: f });
-            chrome.storage.sync.set({ numTodayAssigments7: g });
+        for(var i = 0; i < 7; i++){
+            array[i] = occurencesArr[i];
         }
     });
 }
 
-function printTime(day, due) {
+function printTime(day, due, totalAssigs, todayAssigs) {
     var assign_array = [
-        'numAssigments1',
-        'numAssigments2',
-        'numAssigments3',
-        'numAssigments4',
-        'numAssigments5',
-        'numAssigments6',
-        'numAssigments7',
         'atime1',
         'atime2',
         'atime3',
@@ -164,33 +129,26 @@ function printTime(day, due) {
         'atime5',
         'atime6',
         'atime7',
-        'numTodayAssigments1',
-        'numTodayAssigments2',
-        'numTodayAssigments3',
-        'numTodayAssigments4',
-        'numTodayAssigments5',
-        'numTodayAssigments6',
-        'numTodayAssigments7',
         'doneForm'
     ];
     chrome.storage.sync.get(assign_array, function (items) {
-        var at1 = parseInt(items.atime1) * parseInt(items.numAssigments1);
-        var at2 = parseInt(items.atime2) * parseInt(items.numAssigments2);
-        var at3 = parseInt(items.atime3) * parseInt(items.numAssigments3);
-        var at4 = parseInt(items.atime4) * parseInt(items.numAssigments4);
-        var at5 = parseInt(items.atime5) * parseInt(items.numAssigments5);
-        var at6 = parseInt(items.atime6) * parseInt(items.numAssigments6);
-        var at7 = parseInt(items.atime7) * parseInt(items.numAssigments7);
+        var at1 = parseInt(items.atime1) * totalAssigs[0];
+        var at2 = parseInt(items.atime2) * totalAssigs[1];
+        var at3 = parseInt(items.atime3) * totalAssigs[2];
+        var at4 = parseInt(items.atime4) * totalAssigs[3];
+        var at5 = parseInt(items.atime5) * totalAssigs[4];
+        var at6 = parseInt(items.atime6) * totalAssigs[5];
+        var at7 = parseInt(items.atime7) * totalAssigs[6];
 
         var totalZ = at1 + at2 + at3 + at4 + at5 + at6 + at7;
 
-        at1 = parseInt(items.atime1) * parseInt(items.numTodayAssigments1);
-        at2 = parseInt(items.atime2) * parseInt(items.numTodayAssigments2);
-        at3 = parseInt(items.atime3) * parseInt(items.numTodayAssigments3);
-        at4 = parseInt(items.atime4) * parseInt(items.numTodayAssigments4);
-        at5 = parseInt(items.atime5) * parseInt(items.numTodayAssigments5);
-        at6 = parseInt(items.atime6) * parseInt(items.numTodayAssigments6);
-        at7 = parseInt(items.atime7) * parseInt(items.numTodayAssigments7);
+        at1 = parseInt(items.atime1) * todayAssigs[0];
+        at2 = parseInt(items.atime2) * todayAssigs[1];
+        at3 = parseInt(items.atime3) * todayAssigs[2];
+        at4 = parseInt(items.atime4) * todayAssigs[3];
+        at5 = parseInt(items.atime5) * todayAssigs[4];
+        at6 = parseInt(items.atime6) * todayAssigs[5];
+        at7 = parseInt(items.atime7) * todayAssigs[6];
 
         var totalZtoday = at1 + at2 + at3 + at4 + at5 + at6 + at7;
         var hrsToday = Math.floor(totalZtoday / 60);

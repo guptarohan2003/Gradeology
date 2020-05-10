@@ -56,7 +56,6 @@ h2{
 h1 {
   background-image: linear-gradient(to right, red, orange);
   padding: 7px;
-  /* //font-family: "OCR A Std"; */
   font: "Chalkduster";
   text-align: center;
   border-radius: 14px;
@@ -69,11 +68,8 @@ div {
   margin: auto;
   width: 35%;
   backface-visibility: hidden;
-  /* border-radius: 10px; */
   padding: 10px;
   background-color: rgb(253, 253, 253);
-  /* border-radius: 14px;
-    border: 2px solid rgb(2, 2, 2); */
 }
 
 #hours {
@@ -97,7 +93,6 @@ button {
   height: 26px;
   transition: all 0.5s;
   cursor: pointer;
-  margin: 5px;
   margin: auto;
 }
 

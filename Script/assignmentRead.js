@@ -1,7 +1,7 @@
 $(document).ready(function () {
     chrome.storage.sync.get(['coursesRead', 'enabled'], function (val) {
         var bool = val.coursesRead;
-        var enable = val.enabled; 
+        var enable = val.enabled;
         if (bool == 'true' && enable == 'true') {
             $.ajax({
                 type: "GET",
@@ -27,10 +27,10 @@ $(document).ready(function () {
                             str = str.substring(0, cut - 1);
 
                             assignments.push(str);
-                            if(assignments.length > dates.length){
+                            if (assignments.length > dates.length) {
                                 dates.push(dates[dates.length - 1]);
                                 months.push(months[months.length - 1]);
-                            } 
+                            }
                             //console.log(str.substring(0, cut - 1));
                         } else {
                             var assigDate = dummy[0].outerHTML;
@@ -114,7 +114,7 @@ function setNumAssignments(assignments, array) {
     chrome.storage.sync.get(class_array, function (val) {
         var occurencesArr = [getOccurences(val.class1, assignments), getOccurences(val.class2, assignments), getOccurences(val.class3, assignments), getOccurences(val.class4, assignments), getOccurences(val.class5, assignments), getOccurences(val.class6, assignments), getOccurences(val.class7, assignments)];
 
-        for(var i = 0; i < 7; i++){
+        for (var i = 0; i < 7; i++) {
             array[i] = occurencesArr[i];
         }
     });
@@ -158,16 +158,18 @@ function printTime(day, due, totalAssigs, todayAssigs) {
         var hrs = Math.floor(temp / 60);
         var min = temp % 60;
 
-        var datestr = 'the ';
+        var datestr = 'the <span style="font-size:13px; color:#ea2612"><b>';
         if (day == 1) datestr += "1st";
         else if (day == 2) datestr += "2nd";
         else if (day == 3) datestr += "3rd";
         else datestr += day + "th";
         if (due == 5) datestr = 'today night';
+        datestr += '</b></span>';
 
-        var str = 'You have about <b>' + hrsToday + ' hrs and ' + minToday + ' min</b> of HW <b>for ' + datestr + '</b>  <br> <b> and about ' + hrs + ' hrs and ' + min + ' min</b> of HW in the <b>near future</b>! Good Luck!!   <br>  - Gradeology';
-        if (items.doneForm != "true") str += '<br><br>We recommend you to fill the personalized time form for better accuracy. Pop up form is available by clicking the extension icon.'
-        $("#right-column").prepend('<div id="timeology time" style="padding-left: 10px; padding-right: 10px; border: 1px solid #4CAF50; border-radius: 15px"><table> <tr> <th>Amount of Homework</th> </tr> <tr> <td id = "time display">' + str + '</td> </tr></table></div>');
+        //var str = 'You have about <b>' + hrsToday + ' hrs and ' + minToday + ' min</b> of HW <b>for ' + datestr + '</b>  <br> <b> and about ' + hrs + ' hrs and ' + min + ' min</b> of HW in the <b>near future</b>! Good Luck!!   <br>  - Gradeology';
+        // if (items.doneForm != "true") str += '<br><br>We recommend you to fill the personalized time form for better accuracy. Pop up form is available by clicking the extension icon.'
+        // $("#right-column").prepend('<div id="timeology time" style="padding-left: 10px; padding-right: 10px; border: 1px solid #4CAF50; border-radius: 15px"><table> <tr> <th>Amount of Homework</th> </tr> <tr> <td id = "time display">' + str + '</td> </tr></table></div>');
+        $("#right-column").prepend(timeDiv(hrsToday, minToday, datestr, hrs, min, items.doneForm));
     });
 }
 
@@ -182,3 +184,21 @@ function getOccurences(value, assignments) {
     return num;
 };
 
+function timeDiv(hrsT, minT, date, hrs, min, doneForm) {
+    var div = document.createElement('div');
+    div.setAttribute('id', 'timeDiv');
+    div.setAttribute('style', "padding: 10px; border: 2px solid #ea2612; border-radius: 25px; background:#dedede")
+    var p = document.createElement('span');
+    p.innerHTML = '<b>Amount of Homework</b>';
+    var sp = document.createElement('span');
+    var cssSpan = '<span style="font-size:13px; color:#ea2612">';
+    sp.innerHTML = '<br>You have about '+cssSpan+'<b>' + hrsT + ' hrs and ' + minT + ' min</b></span> of HW for ' + date + '<br> and about '+cssSpan+'<b>' + hrs + ' hrs and ' + min + ' min</b></span> of HW in the '+cssSpan+'<b>near future</b></span>! Good Luck!!   <br><span style="font-size:16px; padding-left:13px"><i>  - Gradeology';
+    div.appendChild(p);
+    div.appendChild(sp);
+    if (doneForm != 'true') {
+        var form = document.createElement('span');
+        form.innerHTML = '<br><br><i>We recommend you to fill the personalized time form for better accuracy. The form is available by clicking the extension icon.'
+        div.appendChild(form);
+    }
+    return div;
+}

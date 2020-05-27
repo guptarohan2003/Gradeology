@@ -447,7 +447,7 @@ function createInputArea(categoryNames, courseNum) {
     div1.setAttribute('style', 'width:420px;height:40px;border-radius: 6px;background-color:#ec0b0b; padding:7px 7px 7px 16px; margin-top:2px; margin-bottom:7px');
 
     categorySelect(div1, categoryNames, courseNum);
-    inputValueItems(div1, courseNum, 'score', 'total', ' Score', ' Total', '53px', true, 0, 0);
+    inputValueItems(div1, courseNum, 'score', 'total', ' Score', ' Total', '55px', true, 0, 0);
 
     var enter = document.createElement('button');
     enter.innerHTML = 'Add Assignment';
@@ -487,7 +487,7 @@ function inputValueItems(parent, courseNum, id1, id2, ph1, ph2, width, adding, j
 function categorySelect(parent, categoryNames, courseNum) {
     var sl = document.createElement("select");
     sl.setAttribute('id', 'select' + courseNum);
-    sl.setAttribute('style', "height:23px; font-size:11px; margin-right:10px; background-color:Ivory; color:Grey");
+    sl.setAttribute('style', "height:23px; font-size:11px; margin-right:10px; background-color:Ivory; color:Grey; margin-top:1px; border-radius:5px");
     for (var i = 0; i < categoryNames.length; i++) {
         var op = document.createElement('option');
         op.value = categoryNames[i];
@@ -497,7 +497,7 @@ function categorySelect(parent, categoryNames, courseNum) {
     parent.appendChild(sl);
 }
 
-function createButton(id, num) {
+function createClassButton(id, num) {
     var button = document.createElement('button');
     button.innerHTML = id;
     button.setAttribute('id', id);
@@ -588,13 +588,13 @@ function createButtonDiv(class1, class2, class3, class4, class5, class6, class7)
     sp.setAttribute('style', 'color:white; font-size:12px; margin-left:15px; background-color:DodgerBlue; padding:10px; border-radius:6px');
     sp.innerHTML = 'Choose the course to edit:';
     buttonDiv.append(sp);
-    buttonDiv.append(createButton(class1, 1));
-    buttonDiv.append(createButton(class2, 2));
-    buttonDiv.append(createButton(class3, 3));
-    buttonDiv.append(createButton(class4, 4));
-    buttonDiv.append(createButton(class5, 5));
-    buttonDiv.append(createButton(class6, 6));
-    buttonDiv.append(createButton(class7, 7));
+    buttonDiv.append(createClassButton(class1, 1));
+    buttonDiv.append(createClassButton(class2, 2));
+    buttonDiv.append(createClassButton(class3, 3));
+    buttonDiv.append(createClassButton(class4, 4));
+    buttonDiv.append(createClassButton(class5, 5));
+    buttonDiv.append(createClassButton(class6, 6));
+    buttonDiv.append(createClassButton(class7, 7));
     buttonDiv.appendChild(enableFinalCalc());
     return buttonDiv;
 }

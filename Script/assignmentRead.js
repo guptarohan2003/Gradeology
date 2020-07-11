@@ -197,7 +197,7 @@ function timeDiv(hrsT, minT, date, hrs, min, doneForm) {
     div.appendChild(sp);
     if (doneForm != 'true') {
         var form = document.createElement('span');
-        form.innerHTML = '<br><br><i>We recommend you to fill the personalized time form for better accuracy. The form is available by clicking the extension icon.'
+        form.innerHTML = '<br><br><i>We recommend you to fill the personalized time form for better accuracy. The form is available by clicking the extension icon and can be changed whenever.'
         div.appendChild(form);
     }
     return div;

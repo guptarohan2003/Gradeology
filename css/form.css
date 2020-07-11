@@ -74,10 +74,12 @@ div {
 
 #hours {
   width: 4em;
+  border-radius: 16px;
 }
 
 #minutes {
   width: 4em;
+  border-radius: 16px;
 }
 
 button {

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 
-<head> 
+<head>
     <script src="Script/form_input.js"></script>
     <link rel="stylesheet" href="css/form.css">
     <link href='https://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet'>
@@ -10,168 +10,76 @@
 <body>
     <h2>Gradeology</h2>
     <div class="tooltip">
-        <span class="tooltiptext" style="font-size: 3mm; line-height: 2; padding: 5px 5px 5 px"> Please fill out this form with how much time you take on
+        <span class="tooltiptext" style="font-size: 3mm; line-height: 2; padding: 5px 5px 5 px"> Please fill out this
+            form with how much time you take on
             average to complete assignments for each of your classes so that we can more accurately predict how much HW
             you will have per night. If you choose not to fill out this form, we use 20 mins as a default value for
             all assignments. This form can be resubmitted whenever!</span>
         <form id="myForm">
-            <p style="font-size: 4mm" id="A" value="class1"> Class </p>
-            <label for="assignments" style="font-size:12px" ;> Assignments: </label>
-            <label for="hours">Hours:</label>
-            <select id="hours" name="hours" required>
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
 
-            </select>
+            <p style="font-size: 4mm" id="0" value="class1"> Class </p>
+            <label id='l0' for="assignments" style="font-size:12px">  Average Assignment Time:  </label>
+            <input type='number' id='i0' placeholder="(in minutes)" min="0">
 
-            <label for="minutes">Minutes:</label>
-            <select id="minutes" name="minutes" required>
-                <option value="0">0</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-                <option value="40">40</option>
-                <option value="50">50</option>
-            </select>
+            <p style="font-size: 4mm" id="1" value="class2"> Class </p>
+            <label id='l1' for="assignments" style="font-size:12px">  Average Assignment Time:  </label>
+            <input type='number' id='i1' placeholder="(in minutes)" min="0">
 
-            <p style="font-size: 4mm" id="B" value="class2"> Class </p>
-            <label for="assignments" style="font-size:12px"> Assignments: </label>
-            <label for="hours">Hours:</label>
-            <select id="hours" name="hours" required>
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
+            <p style="font-size: 4mm" id="2" value="class3"> Class </p>
+            <label id='l2' for="assignments" style="font-size:12px">  Average Assignment Time:  </label>
+            <input type='number' id='i2' placeholder="(in minutes)" min="0">
 
-            </select>
+            <p style="font-size: 4mm" id="3" value="class4"> Class </p>
+            <label id='l3' for="assignments" style="font-size:12px">  Average Assignment Time:  </label>
+            <input type='number' id='i3' placeholder="(in minutes)" min="0">
 
-            <label for="minutes">Minutes:</label>
-            <select id="minutes" name="minutes" required>
-                <option value="0">0</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-                <option value="40">40</option>
-                <option value="50">50</option>
-            </select>
+            <p style="font-size: 4mm" id="4" value="class5"> Class </p>
+            <label id='l4' for="assignments" style="font-size:12px">  Average Assignment Time:  </label>
+            <input type='number' id='i4' placeholder="(in minutes)" min="0">
 
-            <p style="font-size: 4mm" id="C" value="class3"> Class </p>
-            <label for="assignments" style="font-size:12px"> Assignments: </label>
-            <label for="hours">Hours:</label>
-            <select id="hours" name="hours" required>
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
+            <p style="font-size: 4mm" id="5" value="class6"> Class </p>
+            <label id='l5' for="assignments" style="font-size:12px">  Average Assignment Time:  </label>
+            <input type='number' id='i5' placeholder="(in minutes)" min="0">
 
-            </select>
+            <p style="font-size: 4mm" id="6" value="class7"> Class </p>
+            <label id='l6' for="assignments" style="font-size:12px">  Average Assignment Time:  </label>
+            <input type='number' id='i6' placeholder="(in minutes)" min="0">
 
-            <label for="minutes">Minutes:</label>
-            <select id="minutes" name="minutes" required>
-                <option value="0">0</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-                <option value="40">40</option>
-                <option value="50">50</option>
-            </select>
+            <p style="font-size: 4mm" id="7" value="class7"> Class </p>
+            <label id='l7' for="assignments" style="font-size:12px">  Average Assignment Time:  </label>
+            <input type='number' id='i7' placeholder="(in minutes)" min="0">
 
-            </select>
-            <p style="font-size: 4mm" id="D" value="class4"> Class </p>
-            <label for="assignments" style="font-size:12px"> Assignments: </label>
-            <label for="hours">Hours:</label>
-            <select id="hours" name="hours" required>
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
+            <p style="font-size: 4mm" id="8" value="class7"> Class </p>
+            <label id='l8' for="assignments" style="font-size:12px">  Average Assignment Time:  </label>
+            <input type='number' id='i8' placeholder="(in minutes)" min="0">
 
-            </select>
+            <p style="font-size: 4mm" id="9" value="class7"> Class </p>
+            <label id='l9' for="assignments" style="font-size:12px">  Average Assignment Time:  </label>
+            <input type='number' id='i9' placeholder="(in minutes)" min="0">
 
-            <label for="minutes">Minutes:</label>
-            <select id="minutes" name="minutes" required>
-                <option value="0">0</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-                <option value="40">40</option>
-                <option value="50">50</option>
-            </select>
+            <p style="font-size: 4mm" id="10" value="class7"> Class </p>
+            <label id='l10' for="assignments" style="font-size:12px">  Average Assignment Time:  </label>
+            <input type='number' id='i10' placeholder="(in minutes)" min="0">
 
-            <p style="font-size: 4mm" id="E" value="class5"> Class </p>
-            <label for="assignments" style="font-size:12px"> Assignments: </label>
-            <label for="hours">Hours:</label>
-            <select id="hours" name="hours" required>
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
+            <p style="font-size: 4mm" id="11" value="class7"> Class </p>
+            <label id='l11' for="assignments" style="font-size:12px">  Average Assignment Time:  </label>
+            <input type='number' id='i11' placeholder="(in minutes)" min="0">
 
-            </select>
+            <p style="font-size: 4mm" id="12" value="class7"> Class </p>
+            <label id='l12' for="assignments" style="font-size:12px">  Average Assignment Time:  </label>
+            <input type='number' id='i12' placeholder="(in minutes)" min="0">
 
-            <label for="minutes">Minutes:</label>
-            <select id="minutes" name="minutes" required>
-                <option value="0">0</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-                <option value="40">40</option>
-                <option value="50">50</option>
-            </select>
+            <p style="font-size: 4mm" id="13" value="class7"> Class </p>
+            <label id='l13' for="assignments" style="font-size:12px">  Average Assignment Time:  </label>
+            <input type='number' id='i13' placeholder="(in minutes)" min="0"></input>
 
-            <p style="font-size: 4mm" id="F" value="class6"> Class </p>
-            <label for="assignments" style="font-size:12px"> Assignments: </label>
-            <label for="hours">Hours:</label>
-            <select id="hours" name="hours" required>
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
+            <p style="font-size: 4mm" id="14" value="class7"> Class </p>
+            <label id='l14' for="assignments" style="font-size:12px">  Average Assignment Time:  </label>
+            <input type='number' id='i14' placeholder="(in minutes)" min="0"></input>
 
-            </select>
-
-            <label for="minutes">Minutes:</label>
-            <select id="minutes" name="minutes" required>
-                <option value="0">0</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-                <option value="40">40</option>
-                <option value="50">50</option>
-            </select>
-
-            <p style="font-size: 4mm" id="G" value="class7"> Class </p>
-            <label for="assignments" style="font-size:12px"> Assignments: </label>
-            <label for="hours">Hours:</label>
-            <select id="hours" name="hours" required>
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-
-            </select>
-
-            <label for="minutes">Minutes:</label>
-            <select id="minutes" name="minutes" required>
-                <option value="0">0</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-                <option value="40">40</option>
-                <option value="50">50</option>
-            </select>
         </form>
     </div>
-    <div style="text-align:center;">    
+    <div style="text-align:center;">
         <button id="btn_submit"><span>Submit</span></button>
     </div>
 </body>

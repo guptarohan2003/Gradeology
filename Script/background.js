@@ -1,17 +1,9 @@
 chrome.runtime.onInstalled.addListener(function (details) {
-    //set default assignments time to 20 
-    chrome.storage.sync.set({ atime1: '20' });
-    chrome.storage.sync.set({ atime2: '20' });
-    chrome.storage.sync.set({ atime3: '20' });
-    chrome.storage.sync.set({ atime4: '20' });
-    chrome.storage.sync.set({ atime5: '20' });
-    chrome.storage.sync.set({ atime6: '20' });
-    chrome.storage.sync.set({ atime7: '20' });
     
     //whether timeology is enabled
     chrome.storage.sync.set({ enabled: "false" });
     //whether courses have been read
-    chrome.storage.sync.set({ coursesRead: 'false' });
+    chrome.storage.sync.set({ coursesRead: "false" });
     //whether user has done form
     chrome.storage.sync.set({doneForm: "false"});
 
@@ -43,6 +35,8 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
     if (request.greeting == "reload tab") {
         chrome.storage.sync.get(['tabId'], function (val) {
             chrome.tabs.reload(+val.tabId);
+            //incase more than 1 schoology tab is open
+            chrome.tabs.reload()
         });
     }
 });

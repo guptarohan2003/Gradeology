@@ -1,21 +1,26 @@
 body {
   background-image: linear-gradient(to top left, rgb(114, 45, 241), rgb(250, 250, 246));
-}  
+}
 
-select {
-  font-size: 12px;
-  background-color: DodgerBlue;
-  width: 200px;
+input {
+  /* padding-left:5px; */
+  padding: 4px;
+  font-size:11px; 
+  margin-right:10px; 
+  border-radius: 5px;
+  width:90px; 
+  height: 16px; 
+  background-color:Ivory
 }
 
 .tooltip .tooltiptext {
   visibility: hidden;
+  padding: 7px;
   position: absolute;
-  width: 180px;
+  width: 210px;
   background-color: #555;
   color: #fff;
   text-align: center;
-  padding: 2px;
   border-radius: 5px;
   z-index: 1;
   opacity: 0;
@@ -70,16 +75,6 @@ div {
   backface-visibility: hidden;
   padding: 10px;
   background-color: rgb(253, 253, 253);
-}
-
-#hours {
-  width: 4em;
-  border-radius: 16px;
-}
-
-#minutes {
-  width: 4em;
-  border-radius: 16px;
 }
 
 button {

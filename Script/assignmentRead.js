@@ -1,8 +1,46 @@
+//total number of classes
+var numClass = 0;
+chrome.storage.sync.get(['numClasses'], function(val){
+    numClass = val.numClasses
+})
+
 $(document).ready(function () {
     chrome.storage.sync.get(['coursesRead', 'enabled'], function (val) {
-        var bool = val.coursesRead;
-        var enable = val.enabled;
-        if (bool == 'true' && enable == 'true') {
+        //enable gradeology button
+        $("#right-column").prepend(enableGradeologyButton());
+
+        //gradeology button handlers
+        var enableButton = $('#enableGradeology');
+        var cut = enableButton[0].attributes['style'].value.indexOf(';');
+        var othercss = enableButton[0].attributes['style'].value.substring(cut);     
+        if(val.enabled == 'true'){
+            enableButton[0].innerHTML = 'Disable Gradeology'
+            enableButton[0].attributes['style'].value = 'background-color:#00b700' + othercss;
+        } else {
+            enableButton[0].attributes['style'].value = 'background-color:#f10505' + othercss;
+
+            enableButton[0].innerHTML = 'Enable Gradeology'
+        }
+        enableButton.click(function(){   
+            if(val.enabled == 'true'){
+                chrome.storage.sync.set({enabled: 'false'});
+                enableButton[0].attributes['style'].value = 'background-color:#f10505' + othercss;
+                enableButton[0].innerHTML = 'Enable Gradeology'
+            } else {
+                chrome.storage.sync.set({enabled: 'true'});
+                enableButton[0].attributes['style'].value = 'background-color:#00b700' + othercss;
+                enableButton[0].innerHTML = 'Disable Gradeology'
+
+                if (val.coursesRead == 'false') {
+                    chrome.runtime.sendMessage({ greeting: "courses url" });
+                    return
+                }
+            }
+            chrome.runtime.sendMessage({ greeting: "reload tab" });
+        });
+        
+        //time div
+        if (val.coursesRead == 'true' && val.enabled == 'true') {
             $.ajax({
                 type: "GET",
                 url: '/home/upcoming_ajax',
@@ -16,14 +54,14 @@ $(document).ready(function () {
                     var h4_list = $(object[1]).find('h4');
 
                     $.each(h4_list, function (index, element) {
-                        // create a dummy objectt
+                        // create a dummy object
                         var dummy = $('<div/>').html(element.outerHTML).contents();
                         // console.log(dummy[0].outerHTML);
                         var course = dummy.find('.realm-title-course');
                         if (course && course.length > 0 && course[0].outerText) {
                             //console.log(course[0].outerText);
                             var str = course[0].outerText;
-                            var cut = str.indexOf('-');
+                            var cut = str.lastIndexOf('-');
                             str = str.substring(0, cut - 1);
 
                             assignments.push(str);
@@ -84,8 +122,8 @@ $(document).ready(function () {
                     }
 
                     //num of each assignment by class
-                    var numAssignmentsTotal = new Array(7);
-                    var numAssignmentsToday = new Array(7);
+                    var numAssignmentsTotal = new Array(numClass);
+                    var numAssignmentsToday = new Array(numClass);
 
                     //set numAssignment for upcoming duedate
                     setNumAssignments(today, numAssignmentsToday);
@@ -102,55 +140,38 @@ $(document).ready(function () {
 });
 
 function setNumAssignments(assignments, array) {
-    var class_array = [
-        'class1',
-        'class2',
-        'class3',
-        'class4',
-        'class5',
-        'class6',
-        'class7'
-    ];
-    chrome.storage.sync.get(class_array, function (val) {
-        var occurencesArr = [getOccurences(val.class1, assignments), getOccurences(val.class2, assignments), getOccurences(val.class3, assignments), getOccurences(val.class4, assignments), getOccurences(val.class5, assignments), getOccurences(val.class6, assignments), getOccurences(val.class7, assignments)];
+    
+    var class_array = [];
+    for(var i = 0; i < numClass; i++){
+        class_array.push('class' + i)
+    }
 
-        for (var i = 0; i < 7; i++) {
-            array[i] = occurencesArr[i];
+    chrome.storage.sync.get(class_array, function (val) {
+        for (var i = 0; i < numClass; i++) {
+            array[i] = getOccurences(val['class' + i], assignments)
         }
     });
+    
 }
 
 function printTime(day, due, totalAssigs, todayAssigs) {
-    var assign_array = [
-        'atime1',
-        'atime2',
-        'atime3',
-        'atime4',
-        'atime5',
-        'atime6',
-        'atime7',
-        'doneForm'
-    ];
+
+    var assign_array = ['doneForm'];
+    for(var i = 0; i < numClass; i++){
+        assign_array.push('atime' + i)
+    }
+
     chrome.storage.sync.get(assign_array, function (items) {
-        var at1 = parseInt(items.atime1) * totalAssigs[0];
-        var at2 = parseInt(items.atime2) * totalAssigs[1];
-        var at3 = parseInt(items.atime3) * totalAssigs[2];
-        var at4 = parseInt(items.atime4) * totalAssigs[3];
-        var at5 = parseInt(items.atime5) * totalAssigs[4];
-        var at6 = parseInt(items.atime6) * totalAssigs[5];
-        var at7 = parseInt(items.atime7) * totalAssigs[6];
 
-        var totalZ = at1 + at2 + at3 + at4 + at5 + at6 + at7;
+        var totalZ = 0;
+        for(var i = 0; i < numClass; i++){
+            totalZ += parseInt(items['atime' + i] * totalAssigs[i])
+        }
+        var totalZtoday = 0;
+        for(var i = 0; i < numClass; i++){
+            totalZtoday += parseInt(items['atime' + i] * todayAssigs[i])
+        }
 
-        at1 = parseInt(items.atime1) * todayAssigs[0];
-        at2 = parseInt(items.atime2) * todayAssigs[1];
-        at3 = parseInt(items.atime3) * todayAssigs[2];
-        at4 = parseInt(items.atime4) * todayAssigs[3];
-        at5 = parseInt(items.atime5) * todayAssigs[4];
-        at6 = parseInt(items.atime6) * todayAssigs[5];
-        at7 = parseInt(items.atime7) * todayAssigs[6];
-
-        var totalZtoday = at1 + at2 + at3 + at4 + at5 + at6 + at7;
         var hrsToday = Math.floor(totalZtoday / 60);
         var minToday = totalZtoday % 60;
 
@@ -169,7 +190,8 @@ function printTime(day, due, totalAssigs, todayAssigs) {
         //var str = 'You have about <b>' + hrsToday + ' hrs and ' + minToday + ' min</b> of HW <b>for ' + datestr + '</b>  <br> <b> and about ' + hrs + ' hrs and ' + min + ' min</b> of HW in the <b>near future</b>! Good Luck!!   <br>  - Gradeology';
         // if (items.doneForm != "true") str += '<br><br>We recommend you to fill the personalized time form for better accuracy. Pop up form is available by clicking the extension icon.'
         // $("#right-column").prepend('<div id="timeology time" style="padding-left: 10px; padding-right: 10px; border: 1px solid #4CAF50; border-radius: 15px"><table> <tr> <th>Amount of Homework</th> </tr> <tr> <td id = "time display">' + str + '</td> </tr></table></div>');
-        $("#right-column").prepend(timeDiv(hrsToday, minToday, datestr, hrs, min, items.doneForm));
+                
+        $(timeDiv(hrsToday, minToday, datestr, hrs, min, items.doneForm)).insertAfter("#enableGradeology")
     });
 }
 
@@ -187,7 +209,7 @@ function getOccurences(value, assignments) {
 function timeDiv(hrsT, minT, date, hrs, min, doneForm) {
     var div = document.createElement('div');
     div.setAttribute('id', 'timeDiv');
-    div.setAttribute('style', "padding: 10px; border: 2px solid #ea2612; border-radius: 25px; background:#dedede")
+    div.setAttribute('style', "padding: 10px; border: 2px solid #ea2612; border-radius: 25px; background:#dedede; margin-top: 7px;")
     var p = document.createElement('span');
     p.innerHTML = '<b>Amount of Homework</b>';
     var sp = document.createElement('span');
@@ -197,8 +219,16 @@ function timeDiv(hrsT, minT, date, hrs, min, doneForm) {
     div.appendChild(sp);
     if (doneForm != 'true') {
         var form = document.createElement('span');
-        form.innerHTML = '<br><br><i>We recommend you to fill the personalized time form for better accuracy. The form is available by clicking the extension icon and can be changed whenever.'
+        form.innerHTML = '<br><br><i>We recommend you to fill the personalized time form for better accuracy. The form is available by clicking the extension icon and can be updated whenever.'
         div.appendChild(form);
     }
     return div;
+}
+
+function enableGradeologyButton(){
+    var button = document.createElement('button');
+    button.innerHTML = 'Enable Gradeology';
+    button.setAttribute('id', 'enableGradeology');
+    button.setAttribute('style', 'background-color:#f10505; color:white; margin-left:10px; font-size:10px; padding:10px; border-radius: 6px;');
+    return button;
 }

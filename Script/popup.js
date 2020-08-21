@@ -6,16 +6,12 @@ document.addEventListener('DOMContentLoaded', function () {
             chrome.storage.sync.set({ tabId: currTab.id.toString() });
         }
     });
-    
+
     chrome.storage.sync.get(['enabled'], function (val) {
         if (val.enabled == 'true') {
-            document.getElementById("enableGradeology").innerHTML = 'Disable Gradeology';
-            document.getElementById("go_to_form").style.display = "inline";
-            document.getElementById("reread_courses").style.display = "inline";
+            enable()
         } else {
-            document.getElementById("enableGradeology").innerHTML = "Enable Gradeology";
-            document.getElementById("go_to_form").style.display = "none";
-            document.getElementById("reread_courses").style.display = "none";
+            disable()
         }
     });
 
@@ -25,19 +21,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (val.coursesRead == 'false') {
                     chrome.runtime.sendMessage({ greeting: "courses url" });
                 }
-                document.getElementById("go_to_form").style.display = "inline";
-                document.getElementById("enableGradeology").innerHTML = "Disable Gradeology";
-                document.getElementById("reread_courses").style.display = "inline";
+                enable()
                 chrome.storage.sync.set({ enabled: "true" });
-                chrome.tabs.reload();
             });
         } else {
-            document.getElementById("go_to_form").style.display = "none";
-            document.getElementById("enableGradeology").innerHTML = "Enable Gradeology";
-            document.getElementById("reread_courses").style.display = "none";
+            disable();
             chrome.storage.sync.set({ enabled: "false" });
-            chrome.tabs.reload();
         }
+        chrome.tabs.reload();
+
     });
 
     document.getElementById("go_to_form").addEventListener("click", function () {
@@ -50,3 +42,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 });
+
+function disable() {
+    document.getElementById("go_to_form").style.display = "none";
+    document.getElementById("enableGradeology").innerHTML = "Enable Gradeology";
+    document.getElementById("reread_courses").style.display = "none";
+}
+
+function enable() {
+    document.getElementById("go_to_form").style.display = "inline";
+    document.getElementById("enableGradeology").innerHTML = "Disable Gradeology";
+    document.getElementById("reread_courses").style.display = "inline";
+}

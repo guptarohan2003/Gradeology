@@ -33,7 +33,7 @@ $(document).ready(function () {
                 var semesterNum = new Date().getMonth() >= 7 ? 1 : 2;
                 var semester = course.find('.period-row').eq(semesterNum - 1);
                 var semesterid = semester[0].attributes['data-id'].value;
-
+                
                 //original grade
                 var originalGrade = semester[0].children[1].innerText;
                 originalGrade = originalGrade.substring(originalGrade.indexOf('(') + 1, originalGrade.length - 1);

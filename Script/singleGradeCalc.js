@@ -1,13 +1,6 @@
 $(document).ready(function () {
     chrome.storage.sync.get(['enabled'], function (val) {
         if (val.enabled == 'true') {
-            
-            //create button and final calc div
-            $('#center-top').append(createButtonDiv());
-            $('#finalGradeDiv').find('div#finalCalc').hide();
-            $('#currentGrade')[0].value = originalGrade
-            finalCalculatorHandlers();
-
             //course info
             var courseNum = 0
             var course = $('.gradebook-course').eq(0);
@@ -21,6 +14,12 @@ $(document).ready(function () {
             var originalGrade = semester[0].children[1].innerText;
             originalGrade = originalGrade.substring(originalGrade.indexOf('(') + 1, originalGrade.length - 1);
 
+             //create button and final calc div
+             $('#center-top').append(createButtonDiv());
+             $('#finalGradeDiv').find('div#finalCalc').hide();
+             $('#currentGrade')[0].value = originalGrade
+             finalCalculatorHandlers();
+             
             //add calculator
             calculator(course, courseNum, semester, semesterid, originalGrade);
 

@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Gradeology for FUHSD Schoology",
     "short_name": "Gradeology",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "description": "Gradeology enhances the FUHSD Schoology interface and features a Grade Editor and Calculator and tools for Time Management.",
     "permissions": [ 
         "declarativeContent",
@@ -33,7 +33,8 @@
                 "https://fuhsd.schoology.com/course/*", 
                 "https://fuhsd.schoology.com/assignment/*", 
                 "https://fuhsd.schoology.com/user/*",
-                "https://fuhsd.schoology.com/school/*"
+                "https://fuhsd.schoology.com/school/*",
+                "https://fuhsd.schoology.com/event/*"
             ],
             "js": [
                 "script/jquery-3.3.1.min.js",

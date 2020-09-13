@@ -1,44 +1,31 @@
 //total number of classes
 var numClass = 0;
-chrome.storage.sync.get(['numClasses'], function(val){
+chrome.storage.sync.get(['numClasses'], function (val) {
     numClass = val.numClasses
 })
 
 $(document).ready(function () {
     chrome.storage.sync.get(['coursesRead', 'enabled'], function (val) {
-        //enable gradeology button
+
+        // enable gradeology button
         $("#right-column").prepend(enableGradeologyButton());
+        var enableButton = $("#enableGradeology");
 
-        //gradeology button handlers
-        var enableButton = $('#enableGradeology');
-        var cut = enableButton[0].attributes['style'].value.indexOf(';');
-        var othercss = enableButton[0].attributes['style'].value.substring(cut);     
-        if(val.enabled == 'true'){
-            enableButton[0].innerHTML = 'Disable Gradeology'
-            enableButton[0].attributes['style'].value = 'background-color:#00b700' + othercss;
-        } else {
-            enableButton[0].attributes['style'].value = 'background-color:#f10505' + othercss;
-
-            enableButton[0].innerHTML = 'Enable Gradeology'
+        // gradeology button handlers        
+        if (val.enabled == 'true') {
+            enableButton.hide()
         }
-        enableButton.click(function(){   
-            if(val.enabled == 'true'){
-                chrome.storage.sync.set({enabled: 'false'});
-                enableButton[0].attributes['style'].value = 'background-color:#f10505' + othercss;
-                enableButton[0].innerHTML = 'Enable Gradeology'
-            } else {
-                chrome.storage.sync.set({enabled: 'true'});
-                enableButton[0].attributes['style'].value = 'background-color:#00b700' + othercss;
-                enableButton[0].innerHTML = 'Disable Gradeology'
+        enableButton.click(function () {
+            chrome.storage.sync.set({ enabled: 'true' });
 
-                if (val.coursesRead == 'false') {
-                    chrome.runtime.sendMessage({ greeting: "courses url" });
-                    return
-                }
+            if (val.coursesRead == 'false') {
+                chrome.runtime.sendMessage({ greeting: "courses url" });
+                return
             }
             chrome.runtime.sendMessage({ greeting: "reload tab" });
         });
-        
+
+
         //time div
         if (val.coursesRead == 'true' && val.enabled == 'true') {
             $.ajax({
@@ -140,9 +127,9 @@ $(document).ready(function () {
 });
 
 function setNumAssignments(assignments, array) {
-    
+
     var class_array = [];
-    for(var i = 0; i < numClass; i++){
+    for (var i = 0; i < numClass; i++) {
         class_array.push('class' + i)
     }
 
@@ -151,24 +138,24 @@ function setNumAssignments(assignments, array) {
             array[i] = getOccurences(val['class' + i], assignments)
         }
     });
-    
+
 }
 
 function printTime(day, due, totalAssigs, todayAssigs) {
 
     var assign_array = ['doneForm'];
-    for(var i = 0; i < numClass; i++){
+    for (var i = 0; i < numClass; i++) {
         assign_array.push('atime' + i)
     }
 
     chrome.storage.sync.get(assign_array, function (items) {
 
         var totalZ = 0;
-        for(var i = 0; i < numClass; i++){
+        for (var i = 0; i < numClass; i++) {
             totalZ += parseInt(items['atime' + i] * totalAssigs[i])
         }
         var totalZtoday = 0;
-        for(var i = 0; i < numClass; i++){
+        for (var i = 0; i < numClass; i++) {
             totalZtoday += parseInt(items['atime' + i] * todayAssigs[i])
         }
 
@@ -190,7 +177,7 @@ function printTime(day, due, totalAssigs, todayAssigs) {
         //var str = 'You have about <b>' + hrsToday + ' hrs and ' + minToday + ' min</b> of HW <b>for ' + datestr + '</b>  <br> <b> and about ' + hrs + ' hrs and ' + min + ' min</b> of HW in the <b>near future</b>! Good Luck!!   <br>  - Gradeology';
         // if (items.doneForm != "true") str += '<br><br>We recommend you to fill the personalized time form for better accuracy. Pop up form is available by clicking the extension icon.'
         // $("#right-column").prepend('<div id="timeology time" style="padding-left: 10px; padding-right: 10px; border: 1px solid #4CAF50; border-radius: 15px"><table> <tr> <th>Amount of Homework</th> </tr> <tr> <td id = "time display">' + str + '</td> </tr></table></div>');
-                
+
         $(timeDiv(hrsToday, minToday, datestr, hrs, min, items.doneForm)).insertAfter("#enableGradeology")
     });
 }
@@ -214,7 +201,7 @@ function timeDiv(hrsT, minT, date, hrs, min, doneForm) {
     p.innerHTML = '<b>Amount of Homework</b>';
     var sp = document.createElement('span');
     var cssSpan = '<span style="font-size:13px; color:#ea2612">';
-    sp.innerHTML = '<br>You have about '+cssSpan+'<b>' + hrsT + ' hrs and ' + minT + ' min</b></span> of HW for ' + date + '<br> and about '+cssSpan+'<b>' + hrs + ' hrs and ' + min + ' min</b></span> of HW in the '+cssSpan+'<b>near future</b></span>! Good Luck!!   <br><span style="font-size:16px; padding-left:13px"><i>  - Gradeology';
+    sp.innerHTML = '<br>You have about ' + cssSpan + '<b>' + hrsT + ' hrs and ' + minT + ' min</b></span> of HW for ' + date + '<br> and about ' + cssSpan + '<b>' + hrs + ' hrs and ' + min + ' min</b></span> of HW in the ' + cssSpan + '<b>near future</b></span>! Good Luck!!   <br><span style="font-size:16px; padding-left:13px"><i>  - Gradeology';
     div.appendChild(p);
     div.appendChild(sp);
     if (doneForm != 'true') {
@@ -222,10 +209,15 @@ function timeDiv(hrsT, minT, date, hrs, min, doneForm) {
         form.innerHTML = '<br><br><i>We recommend you to fill the personalized time form for better accuracy. The form is available by clicking the extension icon and can be updated whenever.'
         div.appendChild(form);
     }
+    var disable = document.createElement('span');
+    disable.setAttribute('style', 'font-size: 10px;')
+    disable.innerHTML = '<br><br>*<i><b>Disable Gradeology</b> and view other features by clicking the Extension Icon'
+    div.appendChild(disable);
+
     return div;
 }
 
-function enableGradeologyButton(){
+function enableGradeologyButton() {
     var button = document.createElement('button');
     button.innerHTML = 'Enable Gradeology';
     button.setAttribute('id', 'enableGradeology');

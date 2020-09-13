@@ -16,8 +16,8 @@ $(document).ready(function () {
 
              //create button and final calc div
              $('#center-top').append(createButtonDiv());
+             $('#currentGrade')[0].value = parseFloat(originalGrade)
              $('#finalGradeDiv').find('div#finalCalc').hide();
-             $('#currentGrade')[0].value = originalGrade
              finalCalculatorHandlers();
              
             //add calculator
@@ -31,7 +31,7 @@ $(document).ready(function () {
                     calculator(course, courseNum, semester, semesterid, originalGrade, false)
                 } else {
                     removeCalculator(course, courseNum, semester, semesterid)
-                    $('#currentGrade')[0].value = originalGrade
+                    $('#currentGrade')[0].value = parseFloat(originalGrade)
                 }
             });
         }

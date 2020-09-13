@@ -1,17 +1,10 @@
 @keyframes bgcolor {
-  0% {
-      background-color: #45e5d8
-  }  
 
-  30% {
-      background-color: #259fbe
+  0% {
+      background-color: #0b9cfc
   }
 
   60% {
-      background-color: #0f93eb
-  }
-
-  90% {
       background-color: rgb(2, 49, 180)
   }
 
@@ -52,7 +45,7 @@ h1 {
 
 button {
   display: inline-block;
-  border-radius: 10px;
+  border-radius: 14px;
   background-color: #eb0f08;
   border: none;
   color: #FFFFFF;
@@ -63,7 +56,7 @@ button {
   height: 26px;
   transition: all 0.5s;
   cursor: pointer;
-  margin-bottom: 5px;
+  margin-bottom: 7px;
   margin-left: 10px;
 }
 

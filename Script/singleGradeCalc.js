@@ -1,6 +1,6 @@
 $(document).ready(function () {
-    chrome.storage.sync.get(['enabled'], function (val) {
-        if (val.enabled == 'true') {
+    // chrome.storage.sync.get(['enabled'], function (val) {
+    //     if (val.enabled == 'true') {
             //course info
             var courseNum = 0
             var course = $('.gradebook-course').eq(0);
@@ -34,8 +34,8 @@ $(document).ready(function () {
                     $('#currentGrade')[0].value = parseFloat(originalGrade)
                 }
             });
-        }
-    });
+    //     }
+    // });
 });
 
 function createButtonDiv() {

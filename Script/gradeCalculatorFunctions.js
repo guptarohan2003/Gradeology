@@ -1,5 +1,5 @@
 var originalGrades = [];
-function calculator(course, courseNum, semester, semesterid, originalGrade, gradeCalc) {
+function calculator(course, courseNum, semester, semesterid, originalGrade) {
     var categoryNames = [];
     var categoryWeights = [];
     var categoryParentId = [];
@@ -43,7 +43,6 @@ function calculator(course, courseNum, semester, semesterid, originalGrade, grad
 
     course.prepend(createInputArea(categoryNames, courseNum));
     course.prepend(originalGradeHeader(courseNum, originalGrade));
-    if (gradeCalc) $('#input' + courseNum)[0].style['margin-bottom'] = '7px';
     //--------------------HANDLERS--------------------------//
 
     //hide button handler
@@ -283,7 +282,17 @@ function getGradeValues(course, currentTotalPoints, currentGivenPoints, category
 
                 //add editing boxes
                 var divX = createEditInputs(itemGivenPoints, courseNum, itemTotalPoints, i, j);
+
+                var exceptionDiv = x.find('td.grade-column').find('.exception-grade-wrapper');
+                if (exceptionDiv.length > 0) {
+                    var missingspan = document.createElement('span')
+                    missingspan.setAttribute('style', 'color: #a950ec;');
+                    missingspan.innerText = exceptionDiv.find('.exception')[0].innerText + '! ';
+
+                    divX.append(missingspan);
+                }
                 x.find('td.grade-column').append(divX);
+
             }
         }
     }
@@ -390,10 +399,10 @@ function calculateGrade(actualCategory, courseNum, semester, categoryWeights, cu
 
     var category = actualCategory[i];
     var change = category.find('span.toBeDeleted' + courseNum);
-    
+
     //set '-' value in gradebook to 0%
     var noGrade = category.find('span.no-grade')
-    if(noGrade.length > 0) noGrade[0].innerHTML = '(0.00%)'
+    if (noGrade.length > 0) noGrade[0].innerHTML = '(0.00%)'
 
     if (change.length > 0) {
         if (parseFloat(categoryGrade) == originalGrades[i + 1]) {
@@ -544,7 +553,7 @@ function createClassButton(id, num, startColor) {
     button.setAttribute('color', startColor);
     var backgroundColor = '#00b700';
     if (startColor == 'tomato') backgroundColor = '#f10505';
-    button.setAttribute('style', 'background-color:' + backgroundColor + '; color:white; margin-left:10px; font-size:10px; padding:10px; border-radius: 6px;');
+    button.setAttribute('style', 'background-color:' + backgroundColor + '; border-width: 3px; color:white; margin-left:10px; margin-top: 10px; font-size:10px; padding:10px; border-radius: 6px;');
     return button;
 }
 
@@ -556,12 +565,12 @@ function setColorOfButton(ele, singleGradeCalc) {
     if (ele.attributes['color'].value == 'tomato') {
         ele.attributes['color'].value = 'green';
         ele.setAttribute('style', 'background-color:#00b700' + othercss);
-        if (singleGradeCalc) $('button.enableCalc')[0].innerHTML = 'Disable Grade Calculator'
+        if (singleGradeCalc) $('button.enableCalc')[0].innerHTML = 'Enable Grade Calculator'
         return true;
     } else {
         ele.attributes['color'].value = 'tomato';
         ele.setAttribute('style', 'background-color:#f10505' + othercss);
-        if (singleGradeCalc) $('button.enableCalc')[0].innerHTML = 'Enable Grade Calculator'
+        if (singleGradeCalc) $('button.enableCalc')[0].innerHTML = 'Disable Grade Calculator'
         return false;
     }
 }
@@ -618,7 +627,7 @@ function enableFinalCalc() {
     var enableCalc = document.createElement('button');
     enableCalc.innerHTML = 'Enable Final Calculator';
     enableCalc.setAttribute('id', 'enableFinalCalc');
-    enableCalc.setAttribute('style', 'background-color:#7d07c7; color:white; margin-left:12px; font-size:10px; padding:10px; border-radius: 6px;');
+    enableCalc.setAttribute('style', 'border-width: 3px; background-color:#7d07c7; color:white; margin-left:12px; font-size:10px; padding:10px; border-radius: 6px;');
     div.appendChild(enableCalc);
 
     div.append(finalCalcDiv());

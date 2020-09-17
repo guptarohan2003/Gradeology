@@ -33,6 +33,7 @@ div{
 
 
 h1 {
+  font-family: "Comic Sans MS", Times, serif;
     background-image: linear-gradient(to right, red,orange);
     padding: 7px;
     font: "Chalkduster";
@@ -44,6 +45,7 @@ h1 {
 }
 
 button {
+  font-family: "Comic Sans MS", Times, serif;
   display: inline-block;
   border-radius: 14px;
   background-color: #eb0f08;

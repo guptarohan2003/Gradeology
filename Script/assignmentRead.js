@@ -6,10 +6,9 @@ chrome.storage.sync.get(['numClasses'], function (val) {
 
 $(document).ready(function () {
     chrome.storage.sync.get(['coursesRead', 'enabled'], function (val) {
-
         // enable gradeology button
         $("#right-column").prepend(enableGradeologyButton());
-        var enableButton = $("#enableGradeology");
+        var enableButton = $("#enableTime");
 
         // gradeology button handlers        
         if (val.enabled == 'true') {
@@ -149,7 +148,6 @@ function printTime(day, due, totalAssigs, todayAssigs) {
     }
 
     chrome.storage.sync.get(assign_array, function (items) {
-
         var totalZ = 0;
         for (var i = 0; i < numClass; i++) {
             totalZ += parseInt(items['atime' + i] * totalAssigs[i])
@@ -178,7 +176,7 @@ function printTime(day, due, totalAssigs, todayAssigs) {
         // if (items.doneForm != "true") str += '<br><br>We recommend you to fill the personalized time form for better accuracy. Pop up form is available by clicking the extension icon.'
         // $("#right-column").prepend('<div id="timeology time" style="padding-left: 10px; padding-right: 10px; border: 1px solid #4CAF50; border-radius: 15px"><table> <tr> <th>Amount of Homework</th> </tr> <tr> <td id = "time display">' + str + '</td> </tr></table></div>');
 
-        $(timeDiv(hrsToday, minToday, datestr, hrs, min, items.doneForm)).insertAfter("#enableGradeology")
+        $(timeDiv(hrsToday, minToday, datestr, hrs, min)).insertAfter("#enableTime")
     });
 }
 
@@ -193,7 +191,7 @@ function getOccurences(value, assignments) {
     return num;
 };
 
-function timeDiv(hrsT, minT, date, hrs, min, doneForm) {
+function timeDiv(hrsT, minT, date, hrs, min) {
     var div = document.createElement('div');
     div.setAttribute('id', 'timeDiv');
     div.setAttribute('style', "padding: 10px; border: 2px solid #ea2612; border-radius: 25px; background:#dedede; margin-top: 7px;")
@@ -204,23 +202,57 @@ function timeDiv(hrsT, minT, date, hrs, min, doneForm) {
     sp.innerHTML = '<br>You have about ' + cssSpan + '<b>' + hrsT + ' hrs and ' + minT + ' min</b></span> of HW for ' + date + '<br> and about ' + cssSpan + '<b>' + hrs + ' hrs and ' + min + ' min</b></span> of HW in the ' + cssSpan + '<b>near future</b></span>! Good Luck!!   <br><span style="font-size:16px; padding-left:13px"><i>  - Gradeology';
     div.appendChild(p);
     div.appendChild(sp);
-    if (doneForm != 'true') {
-        var form = document.createElement('span');
-        form.innerHTML = '<br><br><i>We recommend you to fill the personalized time form for better accuracy. The form is available by clicking the extension icon and can be updated whenever.'
-        div.appendChild(form);
-    }
-    var disable = document.createElement('span');
-    disable.setAttribute('style', 'font-size: 10px;')
-    disable.innerHTML = '<br><br>*<i><b>Disable Gradeology</b> and view other features by clicking the Extension Icon'
-    div.appendChild(disable);
+
+    tipsDiv(div);
 
     return div;
 }
 
+function tipsDiv(div) {
+    var tips = document.createElement('button');
+    tips.innerHTML = 'Show Tips'
+    tips.setAttribute('style', "float: right;margin-right: 60px;border-color:black;font-size:10px; padding: 1px 10px 1px 10px; border-radius:4px; height: 20px; background-color:Ivory; color:grey;");
+    div.appendChild(tips);
+
+    var fontSize = '10px';
+
+    var disable = document.createElement('span');
+    disable.setAttribute('id', 'disableSP')
+    disable.setAttribute('style', 'display: none; font-size: ' + fontSize)
+    disable.innerHTML = '<br><br>*<i><b>Disable Time Tools</b> and view the other features below by clicking the Extension Icon top right!'
+    div.appendChild(disable);
+
+    var reread = document.createElement('span');
+    reread.setAttribute('id', 'rereadSP')
+    reread.setAttribute('style', 'display: none; font-size: ' + fontSize)
+    reread.innerHTML = '<br>*<i><b>Click Reread Courses</b> whenever you add or drop courses, including at the start of new school years!'
+    div.appendChild(reread);
+
+    var form = document.createElement('span');
+    form.setAttribute('id', 'formSP')
+    form.setAttribute('style', 'display: none; font-size: ' + fontSize)
+    form.innerHTML = '<br>*<i>Fill the Time Form for better accuracy when estimating how much homework you have. It can be updated whenever!'
+    div.appendChild(form);
+
+    tips.addEventListener("click", function () {
+        if (tips.innerText == 'Show Tips') {
+            tips.innerHTML = 'Hide Tips'
+            $('#disableSP').show();
+            $('#rereadSP').show();
+            $('#formSP').show();
+        } else {
+            tips.innerHTML = 'Show Tips'
+            $('#disableSP').hide();
+            $('#rereadSP').hide();
+            $('#formSP').hide();
+        }
+    });
+}
+
 function enableGradeologyButton() {
     var button = document.createElement('button');
-    button.innerHTML = 'Enable Gradeology';
-    button.setAttribute('id', 'enableGradeology');
-    button.setAttribute('style', 'background-color:#f10505; color:white; margin-left:10px; font-size:10px; padding:10px; border-radius: 6px;');
+    button.innerHTML = 'Enable Time Tools';
+    button.setAttribute('id', 'enableTime');
+    button.setAttribute('style', 'border-width: 3px; background-color:#f10505; color:white; margin-left:10px; font-size:10px; padding:10px; border-radius: 6px;');
     return button;
 }

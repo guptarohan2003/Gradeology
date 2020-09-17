@@ -15,22 +15,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.getElementById("enableGradeology").addEventListener("click", function () {
-        if (document.getElementById("enableGradeology").innerHTML == 'Enable Gradeology') {
-            chrome.storage.sync.get(['coursesRead'], function (val) {
-                if (val.coursesRead == 'false') {
-                    chrome.runtime.sendMessage({ greeting: "courses url" });
-                }
-                enable()
-                chrome.storage.sync.set({ enabled: "true" });
-            });
-        } else {
-            disable();
-            chrome.storage.sync.set({ enabled: "false" });
-        }
+    document.getElementById("disableTime").addEventListener("click", function(){
+        chrome.storage.sync.set({ enabled: "false" });
+        disable();
         chrome.tabs.reload();
-
-    });
+    })
 
     document.getElementById("go_to_form").addEventListener("click", function () {
         chrome.tabs.create({ url: "form.html" });
@@ -45,12 +34,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function disable() {
     document.getElementById("go_to_form").style.display = "none";
-    document.getElementById("enableGradeology").innerHTML = "Enable Gradeology";
+    document.getElementById("disableTime").style.display = "none";
     document.getElementById("reread_courses").style.display = "none";
 }
 
 function enable() {
     document.getElementById("go_to_form").style.display = "inline";
-    document.getElementById("enableGradeology").innerHTML = "Disable Gradeology";
+    document.getElementById("disableTime").style.display = "inline";
     document.getElementById("reread_courses").style.display = "inline";
 }

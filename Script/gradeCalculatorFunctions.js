@@ -79,8 +79,8 @@ function calculator(course, courseNum, semester, semesterid, originalGrade) {
     //add assignment button handler
     $('#addassignment' + courseNum).click(function () {
         var categoryChoosen = $('select#select' + courseNum)[0].options['selectedIndex'];
-        var scoreChoosen = $('input#score' + courseNum)[0].value != '' ? parseInt($('input#score' + courseNum)[0].value) : 0;
-        var totalChoosen = $('input#total' + courseNum)[0].value != '' ? parseInt($('input#total' + courseNum)[0].value) : 0;
+        var scoreChoosen = $('input#score' + courseNum)[0].value != '' ? parseFloat($('input#score' + courseNum)[0].value) : 0;
+        var totalChoosen = $('input#total' + courseNum)[0].value != '' ? parseFloat($('input#total' + courseNum)[0].value) : 0;
 
         addedTotalPoints[categoryChoosen] += totalChoosen;
         addedGivenPoints[categoryChoosen] += scoreChoosen;
@@ -90,6 +90,8 @@ function calculator(course, courseNum, semester, semesterid, originalGrade) {
 
         //changed score in added assignment handler
         $('input#changeGivenAdd' + courseNum).change(function (element) {
+            if(element.target.value == '') element.target.value = 0
+            // element.target.valueAsNumber = element.target.value == '' ? 0 : element.target.valueAsNumber;
             var change = element.target.valueAsNumber - element.target.attributes['previousVal'].value;
             element.target.attributes['previousVal'].value = element.target.valueAsNumber
             var cat = element.target.attributes['cat'].value;
@@ -99,6 +101,7 @@ function calculator(course, courseNum, semester, semesterid, originalGrade) {
         });
         //changed total in added assignment handler
         $('input#changeTotalAdd' + courseNum).change(function (element) {
+            if(element.target.value == '') element.target.value = 0
             var change = element.target.valueAsNumber - element.target.attributes['previousVal'].value;
             element.target.attributes['previousVal'].value = element.target.valueAsNumber
             var cat = element.target.attributes['cat'].value;
@@ -126,6 +129,7 @@ function calculator(course, courseNum, semester, semesterid, originalGrade) {
 
     // change given score handler
     $('input#changeGiven' + courseNum).change(function (element) {
+        if(element.target.value == '') element.target.value = 0
         var currentNum = element.target.valueAsNumber;
         var change = element.target.valueAsNumber - element.target.attributes['previousVal'].value;
         element.target.attributes['previousVal'].value = element.target.valueAsNumber
@@ -159,6 +163,7 @@ function calculator(course, courseNum, semester, semesterid, originalGrade) {
 
     //change given total handler
     $('input#changeTotal' + courseNum).change(function (element) {
+        if(element.target.value == '') element.target.value = 0
         var currentNum = element.target.valueAsNumber;
         var change = element.target.valueAsNumber - element.target.attributes['previousVal'].value;
         element.target.attributes['previousVal'].value = element.target.valueAsNumber
@@ -453,7 +458,7 @@ function addAssignment(category, score, total, courseNum, categoryChoosen, semes
     itemDiv.setAttribute('style', 'width:460px; padding:10px;');
 
     var assig = document.createElement('span');
-    assig.setAttribute('style', 'color:black; font-size:11px; margin-left:20px; margin-right:30px;color:#e60f0f');
+    assig.setAttribute('style', 'color:black; font-size:11px; margin-left:20px; margin-right:26px;color:#e60f0f');
     assig.innerHTML = "*** Gradeology Assignment ***";
 
     var cate = document.createElement('span');
@@ -467,7 +472,7 @@ function addAssignment(category, score, total, courseNum, categoryChoosen, semes
     del.setAttribute('style', "margin-left: 10px;border-color:black;font-size:10px; padding: 1px 10px 1px 10px; border-radius:4px; height: 20px; background-color:Ivory; color:grey;");
 
     itemDiv.append(assig);
-    inputValueItems(itemDiv, courseNum, 'changeGivenAdd', 'changeTotalAdd', score, total, '40px', false, categoryChoosen.toString(), 0);
+    inputValueItems(itemDiv, courseNum, 'changeGivenAdd', 'changeTotalAdd', score, total, '44px', false, categoryChoosen.toString(), 0);
     itemDiv.append(del);
     itemDiv.append(cate);
 
@@ -565,12 +570,12 @@ function setColorOfButton(ele, singleGradeCalc) {
     if (ele.attributes['color'].value == 'tomato') {
         ele.attributes['color'].value = 'green';
         ele.setAttribute('style', 'background-color:#00b700' + othercss);
-        if (singleGradeCalc) $('button.enableCalc')[0].innerHTML = 'Enable Grade Calculator'
+        if (singleGradeCalc) $('button.enableCalc')[0].innerHTML = 'Disable Grade Calculator'
         return true;
     } else {
         ele.attributes['color'].value = 'tomato';
         ele.setAttribute('style', 'background-color:#f10505' + othercss);
-        if (singleGradeCalc) $('button.enableCalc')[0].innerHTML = 'Disable Grade Calculator'
+        if (singleGradeCalc) $('button.enableCalc')[0].innerHTML = 'Enable Grade Calculator'
         return false;
     }
 }

@@ -25,9 +25,9 @@ $(document).ready(function () {
 
     //enable class gradeCalc
     $('button.enableCalc').click(function (element) {
-        var disable = setColorOfButton(element.target, true);
+        var enable = setColorOfButton(element.target, true);
 
-        if (!disable) {
+        if (enable) {
             calculator(course, courseNum, semester, semesterid, originalGrade)
         } else {
             removeCalculator(course, courseNum, semester, semesterid)
@@ -40,7 +40,7 @@ function createButtonDiv() {
     var buttonDiv = document.createElement('div');
     buttonDiv.setAttribute('style', 'display: inline-flex; margin-left:-10px')
 
-    buttonDiv.append(createClassButton('Enable Grade Calculator', 1, 'green'));
+    buttonDiv.append(createClassButton('Enable Grade Calculator', 1, 'tomato'));
     buttonDiv.appendChild(enableFinalCalc());
     return buttonDiv;
 }

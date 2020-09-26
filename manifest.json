@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Gradeology for Schoology",
     "short_name": "Gradeology",
-    "version": "1.2.6",
+    "version": "1.2.7",
     "description": "Gradeology enhances the Schoology interface and features a Grade Editor and Calculator and tools for Time Management.",
     "permissions": [ 
         "declarativeContent",

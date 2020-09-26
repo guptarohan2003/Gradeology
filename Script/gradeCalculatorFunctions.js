@@ -1,4 +1,5 @@
 var originalGrades = [];
+var hasSummaryDiv;
 var summaryDivHTML;
 var summaryDiv;
 
@@ -44,7 +45,12 @@ function calculator(course, courseNum, semester, semesterid, originalGrade) {
 
     //bottom of course summary grade info
     summaryDiv = course.find('.summary-course').find('.course-grade-wrapper')
-    summaryDivHTML = summaryDiv[0].innerHTML;
+    if(summaryDiv.length > 0){
+        summaryDivHTML = summaryDiv[0].innerHTML;
+        hasSummaryDiv = true;
+    } else {
+        hasSummaryDiv = false;
+    }
 
     getGradeValues(course, currentTotalPoints, currentGivenPoints, categoryParentId, courseNum);
 
@@ -258,7 +264,7 @@ function removeCalculator(course, courseNum, semester, semesterid) {
     }
 
     // fix summaryDiv html
-    summaryDiv[0].innerHTML = summaryDivHTML;
+    if(hasSummaryDiv) summaryDiv[0].innerHTML = summaryDivHTML;
 
 
     //remove added Assignment
@@ -391,9 +397,9 @@ function calculateGrade(actualCategory, courseNum, semester, categoryWeights, cu
                 span.show();
             }
 
-            summaryDiv[0].innerHTML = summaryDivHTML;
+            if(hasSummaryDiv) summaryDiv[0].innerHTML = summaryDivHTML;
         } else {
-            summaryDiv[0].innerHTML = "<span style='background-color:yellow'>Course Grade: (" + newGrade.toString() + "%)</span>";
+            if(hasSummaryDiv) summaryDiv[0].innerHTML = "<span style='background-color:yellow'>Course Grade: (" + newGrade.toString() + "%)</span>";
             semester.find('span.toBeDeleted' + courseNum).text('(' + newGrade + '%)');
         }
     } else {
@@ -418,7 +424,7 @@ function calculateGrade(actualCategory, courseNum, semester, categoryWeights, cu
             if (alpha.length > 0) alpha.hide();
 
             //add span to summaryDiv
-            summaryDiv[0].innerHTML = "<span style='background-color:yellow'>Course Grade: (" + newGrade.toString() + "%)</span>";
+            if(hasSummaryDiv) summaryDiv[0].innerHTML = "<span style='background-color:yellow'>Course Grade: (" + newGrade.toString() + "%)</span>";
         }
     }
 

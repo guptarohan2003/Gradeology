@@ -1,11 +1,13 @@
 chrome.runtime.onInstalled.addListener(function (details) {
     
-    //whether timeology is enabled
-    chrome.storage.sync.set({ enabled: "false" });
-    //whether courses have been read
-    chrome.storage.sync.set({ coursesRead: "false" });
-    //whether user has done form
-    chrome.storage.sync.set({doneForm: "false"});
+    //check if already installed when update
+    chrome.storage.sync.get(['enabled', 'coursesRead', 'alwaysEnable'], function(val){
+        if(val.enabled != 'true') chrome.storage.sync.set({ enabled: "false" });
+        if(val.coursesRead != 'true') chrome.storage.sync.set({ coursesRead: "false" });
+        if(val.alwaysEnable != true) chrome.storage.sync.set({ alwaysEnable: false });
+    })
+
+    // chrome.storage.sync.set({doneForm: "false"});
 
     chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
         chrome.declarativeContent.onPageChanged.addRules([{

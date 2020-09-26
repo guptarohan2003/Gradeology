@@ -1,4 +1,7 @@
 var originalGrades = [];
+var summaryDivHTML;
+var summaryDiv;
+
 function calculator(course, courseNum, semester, semesterid, originalGrade) {
     var categoryNames = [];
     var categoryWeights = [];
@@ -38,6 +41,10 @@ function calculator(course, courseNum, semester, semesterid, originalGrade) {
             originalGrades.push(parseFloat(originalCategoryGrade));
         }
     }
+
+    //bottom of course summary grade info
+    summaryDiv = course.find('.summary-course').find('.course-grade-wrapper')
+    summaryDivHTML = summaryDiv[0].innerHTML;
 
     getGradeValues(course, currentTotalPoints, currentGivenPoints, categoryParentId, courseNum);
 
@@ -90,7 +97,7 @@ function calculator(course, courseNum, semester, semesterid, originalGrade) {
 
         //changed score in added assignment handler
         $('input#changeGivenAdd' + courseNum).change(function (element) {
-            if(element.target.value == '') element.target.value = 0
+            if (element.target.value == '') element.target.value = 0
             // element.target.valueAsNumber = element.target.value == '' ? 0 : element.target.valueAsNumber;
             var change = element.target.valueAsNumber - element.target.attributes['previousVal'].value;
             element.target.attributes['previousVal'].value = element.target.valueAsNumber
@@ -101,7 +108,7 @@ function calculator(course, courseNum, semester, semesterid, originalGrade) {
         });
         //changed total in added assignment handler
         $('input#changeTotalAdd' + courseNum).change(function (element) {
-            if(element.target.value == '') element.target.value = 0
+            if (element.target.value == '') element.target.value = 0
             var change = element.target.valueAsNumber - element.target.attributes['previousVal'].value;
             element.target.attributes['previousVal'].value = element.target.valueAsNumber
             var cat = element.target.attributes['cat'].value;
@@ -129,7 +136,7 @@ function calculator(course, courseNum, semester, semesterid, originalGrade) {
 
     // change given score handler
     $('input#changeGiven' + courseNum).change(function (element) {
-        if(element.target.value == '') element.target.value = 0
+        if (element.target.value == '') element.target.value = 0
         var currentNum = element.target.valueAsNumber;
         var change = element.target.valueAsNumber - element.target.attributes['previousVal'].value;
         element.target.attributes['previousVal'].value = element.target.valueAsNumber
@@ -163,7 +170,7 @@ function calculator(course, courseNum, semester, semesterid, originalGrade) {
 
     //change given total handler
     $('input#changeTotal' + courseNum).change(function (element) {
-        if(element.target.value == '') element.target.value = 0
+        if (element.target.value == '') element.target.value = 0
         var currentNum = element.target.valueAsNumber;
         var change = element.target.valueAsNumber - element.target.attributes['previousVal'].value;
         element.target.attributes['previousVal'].value = element.target.valueAsNumber
@@ -221,7 +228,7 @@ function removeCalculator(course, courseNum, semester, semesterid) {
         span = semester.find('span.no-grade')
         span.show();
     }
-    //show alpha grade
+    //show semester alpha grade
     var alpha = semester.find('span.alpha-grade')
     if (alpha.length > 0) alpha.show();
 
@@ -244,11 +251,14 @@ function removeCalculator(course, courseNum, semester, semesterid) {
             }
             var newGrade = category.find('span.toBeDeleted' + courseNum);
             if (newGrade.length > 0) newGrade.remove();
-            //show alpha grade
+            //show category alpha grade
             var alpha = category.find('span.alpha-grade')
             if (alpha.length > 0) alpha.show();
         }
     }
+
+    // fix summaryDiv html
+    summaryDiv[0].innerHTML = summaryDivHTML;
 
 
     //remove added Assignment
@@ -311,7 +321,7 @@ function createEditInputs(itemGivenPoints, courseNum, itemTotalPoints, i, j) {
     divX.setAttribute('originalGiven', itemGivenPoints);
     divX.setAttribute('originalTotal', itemTotalPoints);
 
-    inputValueItems(divX, courseNum, 'changeGiven', 'changeTotal', itemGivenPoints.toString(), itemTotalPoints.toString(), '44px', false, j, i);
+    inputValueItems(divX, courseNum, 'changeGiven', 'changeTotal', itemGivenPoints.toString(), itemTotalPoints.toString(), '52px', false, j, i);
 
     var hide = document.createElement('button');
     hide.innerHTML = 'Exclude Assignment';
@@ -327,19 +337,18 @@ function createEditInputs(itemGivenPoints, courseNum, itemTotalPoints, i, j) {
 
 function calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints, categoryNum) {
     var newGrade = 0;
+
     //check if category has 0 / 0 points
     var tempCategoryWeights = [];
-    for (var i = 0; i < categoryWeights.length; i++) {
-        tempCategoryWeights.push(categoryWeights[i]);
-    }
 
     //decimal new category grade;
     for (var i = 0; i < currentGivenPoints.length; i++) {
         var total = currentTotalPoints[i] + addedTotalPoints[i];
-        if (total != 0)
+        if (total != 0) {
+            tempCategoryWeights.push(categoryWeights[i])
             newGrade += (currentGivenPoints[i] + addedGivenPoints[i]) / total * categoryWeights[i] / 100;
-        else
-            tempCategoryWeights[i] = 0;
+        } else
+            tempCategoryWeights.push(0)
     }
 
     //fix grade if totalweights isnt 100%
@@ -348,15 +357,28 @@ function calculateGrade(actualCategory, courseNum, semester, categoryWeights, cu
         totalWeight += tempCategoryWeights[i];
     }
 
-    if (totalWeight != 0 && totalWeight != 100) {
-        newGrade = newGrade / totalWeight * 100;
+    if (totalWeight != 100) {
+        if (totalWeight > 100 && totalWeight % 100 == 0) {
+            //no weightage - ex: roberts calc ab
+            var given = 0;
+            var total = 0;
+            for (var i = 0; i < currentGivenPoints.length; i++) {
+                given += currentGivenPoints[i] + addedGivenPoints[i];
+                total += currentTotalPoints[i] + addedTotalPoints[i];
+            }
+            newGrade = given / total;
+        } else {
+            //totalWeight less than 100
+            newGrade = newGrade / totalWeight * 100;
+        }
     }
 
     //new percent grade
     newGrade = newGrade * 100;
     newGrade = newGrade.toFixed(2);
 
-    //set semester grade value
+    //set semester and summary grade value
+    // var summaryDiv = $('.gradebook-course').eq(courseNum).find('.summary-course').find('.course-grade-wrapper');
     var change = semester.find('span.toBeDeleted' + courseNum);
     if (change.length > 0) {
         if (newGrade == originalGrades[0]) {
@@ -368,8 +390,12 @@ function calculateGrade(actualCategory, courseNum, semester, categoryWeights, cu
                 span = semester.find('span.no-grade')
                 span.show();
             }
-        } else
+
+            summaryDiv[0].innerHTML = summaryDivHTML;
+        } else {
+            summaryDiv[0].innerHTML = "<span style='background-color:yellow'>Course Grade: (" + newGrade.toString() + "%)</span>";
             semester.find('span.toBeDeleted' + courseNum).text('(' + newGrade + '%)');
+        }
     } else {
         if (newGrade != originalGrades[0]) {
             var sp = document.createElement('span');
@@ -390,6 +416,9 @@ function calculateGrade(actualCategory, courseNum, semester, categoryWeights, cu
             //hide alpha grade if there
             var alpha = span.find('span.alpha-grade')
             if (alpha.length > 0) alpha.hide();
+
+            //add span to summaryDiv
+            summaryDiv[0].innerHTML = "<span style='background-color:yellow'>Course Grade: (" + newGrade.toString() + "%)</span>";
         }
     }
 
@@ -455,7 +484,7 @@ function calculateGrade(actualCategory, courseNum, semester, categoryWeights, cu
 function addAssignment(category, score, total, courseNum, categoryChoosen, semester) {
     var itemDiv = document.createElement('div');
     itemDiv.setAttribute('class', 'addedItem' + courseNum);
-    itemDiv.setAttribute('style', 'width:460px; padding:10px;');
+    itemDiv.setAttribute('style', 'width:476px; padding:10px;');
 
     var assig = document.createElement('span');
     assig.setAttribute('style', 'color:black; font-size:11px; margin-left:20px; margin-right:26px;color:#e60f0f');
@@ -472,7 +501,7 @@ function addAssignment(category, score, total, courseNum, categoryChoosen, semes
     del.setAttribute('style', "margin-left: 10px;border-color:black;font-size:10px; padding: 1px 10px 1px 10px; border-radius:4px; height: 20px; background-color:Ivory; color:grey;");
 
     itemDiv.append(assig);
-    inputValueItems(itemDiv, courseNum, 'changeGivenAdd', 'changeTotalAdd', score, total, '44px', false, categoryChoosen.toString(), 0);
+    inputValueItems(itemDiv, courseNum, 'changeGivenAdd', 'changeTotalAdd', score, total, '52px', false, categoryChoosen.toString(), 0);
     itemDiv.append(del);
     itemDiv.append(cate);
 
@@ -521,7 +550,7 @@ function inputValueItems(parent, courseNum, id1, id2, ph1, ph2, width, adding, j
     if (!adding) score.setAttribute('previousVal', ph1);
     score.setAttribute('type', 'number');
     score.setAttribute(addOrEdit, ph1);
-    score.setAttribute('style', "padding-left:5px;font-size:11px; margin-right:10px; border-radius: 5px;width:" + width + "; height: 20px; background-color:Ivory");
+    score.setAttribute('style', "padding-left:5px;font-size:11px; margin-right:10px; border-radius: 5px;width:" + width + "; height: 22px; background-color:Ivory");
 
     var total = document.createElement('input');
     total.setAttribute('id', id2 + courseNum);
@@ -530,7 +559,7 @@ function inputValueItems(parent, courseNum, id1, id2, ph1, ph2, width, adding, j
     if (!adding) total.setAttribute('previousVal', ph2);
     total.setAttribute('type', 'number');
     total.setAttribute(addOrEdit, ph2);
-    total.setAttribute('style', "padding-left:5px;font-size:11px; margin-right:10px; border-radius: 5px;width:" + width + "; height: 20px; background-color:Ivory");
+    total.setAttribute('style', "padding-left:5px;font-size:11px; margin-right:10px; border-radius: 5px;width:" + width + "; height: 22px; background-color:Ivory");
 
     parent.appendChild(score);
     parent.appendChild(total);
@@ -557,7 +586,7 @@ function createClassButton(id, num, startColor) {
     button.setAttribute('courseNum', num.toString());
     button.setAttribute('color', startColor);
     var backgroundColor = '#00b700';
-    if (startColor == 'tomato') backgroundColor = '#f10505';
+    if (startColor == 'tomato') backgroundColor = '#d20909';
     button.setAttribute('style', 'background-color:' + backgroundColor + '; border-width: 3px; color:white; margin-left:10px; margin-top: 10px; font-size:10px; padding:10px; border-radius: 6px;');
     return button;
 }
@@ -574,7 +603,7 @@ function setColorOfButton(ele, singleGradeCalc) {
         return true;
     } else {
         ele.attributes['color'].value = 'tomato';
-        ele.setAttribute('style', 'background-color:#f10505' + othercss);
+        ele.setAttribute('style', 'background-color:#d20909' + othercss);
         if (singleGradeCalc) $('button.enableCalc')[0].innerHTML = 'Enable Grade Calculator'
         return false;
     }
@@ -661,4 +690,39 @@ function finalCalculatorHandlers() {
             element.target.innerHTML = "Enable Final Calculator";
         }
     });
+}
+
+//-------------Always Enable Functions-------------//
+
+function alwaysEnable(){
+    var d = document.createElement('div')
+    d.setAttribute('id', 'alwaysEnableDiv')
+    d.setAttribute('style', 'float:right; margin-top:22px; font-size:10px')
+
+    var inp = document.createElement('input')
+    inp.setAttribute('type', 'checkbox')
+    inp.setAttribute('id', 'alwaysEnable')
+
+    var lbl = document.createElement('label');
+    lbl.setAttribute('for', 'alwaysEnable')
+    lbl.setAttribute('style', 'margin-left: 5px;')
+    lbl.innerHTML = 'Enable Grade Calculator On Load';
+
+    d.appendChild(inp)
+    d.appendChild(lbl)
+    return d;
+
+}
+
+function alwaysEnableHandlers(){
+    chrome.storage.sync.get(['alwaysEnable'], function(val){
+        var chk = $('#alwaysEnable');
+
+        chk[0].checked = val.alwaysEnable
+
+        chk.click(function(){
+            var isChecked = chk[0].checked;
+            chrome.storage.sync.set({alwaysEnable: isChecked});
+        })
+    })
 }

@@ -1,5 +1,11 @@
 $(document).ready(function () {
-    chrome.storage.sync.get(['alwaysEnable'], function (val) {
+    chrome.storage.sync.get(['alwaysEnable', 'notif'], function (val) {
+        //alert notification    
+        if(!val.notif){
+            alert('VIEW ALL YOUR GRADES ON ONE SCREEN IN YOUR GRADE REPORT!  CLICK GRADES-->GRADE REPORT                                  -gradeology :)')
+            chrome.storage.sync.set({notif: true});
+        }
+
         //course info
         var courseNum = 0
         var course = $('.gradebook-course').eq(0);
@@ -24,18 +30,21 @@ $(document).ready(function () {
         //add alwaysEnable checkbox
         $(alwaysEnable()).insertAfter($('#buttonDiv'))
         alwaysEnableHandlers();
+        
+        //summaryDiv Information
+        var summaryDivInf = summaryDivInfo(course);
 
         //add calculator
-        if(val.alwaysEnable) calculator(course, courseNum, semester, semesterid, originalGrade);
+        if(val.alwaysEnable) calculator(course, courseNum, semester, semesterid, originalGrade, summaryDivInf);
 
         //enable class gradeCalc
         $('button.enableCalc').click(function (element) {
             var enable = setColorOfButton(element.target, true);
 
             if (enable) {
-                calculator(course, courseNum, semester, semesterid, originalGrade)
+                calculator(course, courseNum, semester, semesterid, originalGrade, summaryDivInf)
             } else {
-                removeCalculator(course, courseNum, semester, semesterid)
+                removeCalculator(course, courseNum, semester, semesterid, summaryDivInf)
                 $('#currentGrade')[0].value = parseFloat(originalGrade)
             }
         });

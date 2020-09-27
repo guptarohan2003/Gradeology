@@ -5,6 +5,7 @@ chrome.storage.sync.get(['numClasses'], function (val) {
 })
 
 $(document).ready(function () {
+    chrome.storage.sync.set({fuhsd: true});
     chrome.storage.sync.get(['coursesRead', 'enabled'], function (val) {
         // enable gradeology button
         $("#right-column").prepend(enableGradeologyButton());
@@ -23,7 +24,6 @@ $(document).ready(function () {
             }
             chrome.runtime.sendMessage({ greeting: "reload tab" });
         });
-
 
         //time div
         if (val.coursesRead == 'true' && val.enabled == 'true') {
@@ -87,7 +87,6 @@ $(document).ready(function () {
 
                     //dayofweek
                     var due = date.getDay();
-                    var originalDate = date.getDate();
                     //set upcoming due date
                     if (due == 5)
                         date.setDate(date.getDate());

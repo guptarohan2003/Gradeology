@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-
     //set courses on form
     chrome.storage.sync.get(['numClasses'], function(v){
         var class_array = [];
@@ -24,13 +23,12 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function btnSubmitHandler() {
-
     chrome.storage.sync.get(['numClasses'], function(v){
         var save = {};
         for(var i = 0; i < v.numClasses; i++){
             var str = 'atime' + i;
             var time = document.getElementById('i' + i.toString()).value 
-            save[str] = time >= 0 ? time : 0
+            save[str] = time
         }
         chrome.storage.sync.set(save);
     });

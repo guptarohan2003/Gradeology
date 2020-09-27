@@ -1,9 +1,4 @@
-var originalGrades = [];
-var hasSummaryDiv;
-var summaryDivHTML;
-var summaryDiv;
-
-function calculator(course, courseNum, semester, semesterid, originalGrade) {
+function calculator(course, courseNum, semester, semesterid, originalGrade, summaryDivInfo) {
     var categoryNames = [];
     var categoryWeights = [];
     var categoryParentId = [];
@@ -12,6 +7,7 @@ function calculator(course, courseNum, semester, semesterid, originalGrade) {
     var addedTotalPoints = [];
     var addedGivenPoints = [];
     var actualCategory = [];
+    var originalGrades = [];
     originalGrades.push(parseFloat(originalGrade));
 
     //categories info
@@ -41,15 +37,6 @@ function calculator(course, courseNum, semester, semesterid, originalGrade) {
             actualCategory.push(x);
             originalGrades.push(parseFloat(originalCategoryGrade));
         }
-    }
-
-    //bottom of course summary grade info
-    summaryDiv = course.find('.summary-course').find('.course-grade-wrapper')
-    if(summaryDiv.length > 0){
-        summaryDivHTML = summaryDiv[0].innerHTML;
-        hasSummaryDiv = true;
-    } else {
-        hasSummaryDiv = false;
     }
 
     getGradeValues(course, currentTotalPoints, currentGivenPoints, categoryParentId, courseNum);
@@ -86,7 +73,7 @@ function calculator(course, courseNum, semester, semesterid, originalGrade) {
             currentGivenPoints[cat] += hideGiven;
             currentTotalPoints[cat] += hideTotal;
         }
-        calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints, cat);
+        calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints, cat, summaryDivInfo, originalGrades);
     });
 
     //add assignment button handler
@@ -98,7 +85,7 @@ function calculator(course, courseNum, semester, semesterid, originalGrade) {
         addedTotalPoints[categoryChoosen] += totalChoosen;
         addedGivenPoints[categoryChoosen] += scoreChoosen;
 
-        calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints, categoryChoosen);
+        calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints, categoryChoosen, summaryDivInfo, originalGrades);
         addAssignment(categoryNames[categoryChoosen], scoreChoosen, totalChoosen, courseNum, categoryChoosen, semester);
 
         //changed score in added assignment handler
@@ -110,7 +97,7 @@ function calculator(course, courseNum, semester, semesterid, originalGrade) {
             var cat = element.target.attributes['cat'].value;
 
             addedGivenPoints[cat] += change;
-            calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints, cat);
+            calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints, cat, summaryDivInfo, originalGrades);
         });
         //changed total in added assignment handler
         $('input#changeTotalAdd' + courseNum).change(function (element) {
@@ -120,7 +107,7 @@ function calculator(course, courseNum, semester, semesterid, originalGrade) {
             var cat = element.target.attributes['cat'].value;
 
             addedTotalPoints[cat] += change;
-            calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints, cat);
+            calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints, cat, summaryDivInfo, originalGrades);
         });
 
         //delete added assignment handler
@@ -136,7 +123,7 @@ function calculator(course, courseNum, semester, semesterid, originalGrade) {
             addedGivenPoints[category] -= score;
             addedTotalPoints[category] -= total;
 
-            calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints, category);
+            calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints, category, summaryDivInfo, originalGrades);
         });
     });
 
@@ -169,7 +156,7 @@ function calculator(course, courseNum, semester, semesterid, originalGrade) {
 
         if (!hidden) {
             currentGivenPoints[cat] += change;
-            calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints, cat);
+            calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints, cat, summaryDivInfo, originalGrades);
         }
 
     });
@@ -203,13 +190,13 @@ function calculator(course, courseNum, semester, semesterid, originalGrade) {
 
         if (!hidden) {
             currentTotalPoints[cat] += change;
-            calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints, cat);
+            calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints, cat, summaryDivInfo, originalGrades);
         }
 
     });
 }
 
-function removeCalculator(course, courseNum, semester, semesterid) {
+function removeCalculator(course, courseNum, semester, semesterid, summaryDivInfo) {
     //-----------------DELETE ADDED DIVS------------------//
 
     // remove input area
@@ -264,8 +251,7 @@ function removeCalculator(course, courseNum, semester, semesterid) {
     }
 
     // fix summaryDiv html
-    if(hasSummaryDiv) summaryDiv[0].innerHTML = summaryDivHTML;
-
+    if(summaryDivInfo[0]) summaryDivInfo[1][0].innerHTML = summaryDivInfo[2];
 
     //remove added Assignment
     var addedAssigs = course.find('.addedItem' + courseNum);
@@ -341,7 +327,7 @@ function createEditInputs(itemGivenPoints, courseNum, itemTotalPoints, i, j) {
     return divX;
 }
 
-function calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints, categoryNum) {
+function calculateGrade(actualCategory, courseNum, semester, categoryWeights, currentGivenPoints, currentTotalPoints, addedTotalPoints, addedGivenPoints, categoryNum, summaryDivInfo, originalGrades) {
     var newGrade = 0;
 
     //check if category has 0 / 0 points
@@ -397,9 +383,9 @@ function calculateGrade(actualCategory, courseNum, semester, categoryWeights, cu
                 span.show();
             }
 
-            if(hasSummaryDiv) summaryDiv[0].innerHTML = summaryDivHTML;
+            if(summaryDivInfo[0]) summaryDivInfo[1][0].innerHTML = summaryDivInfo[2];
         } else {
-            if(hasSummaryDiv) summaryDiv[0].innerHTML = "<span style='background-color:yellow'>Course Grade: (" + newGrade.toString() + "%)</span>";
+            if(summaryDivInfo[0]) summaryDivInfo[1][0].innerHTML = "<span style='background-color:yellow'>Course Grade: (" + newGrade.toString() + "%)</span>";
             semester.find('span.toBeDeleted' + courseNum).text('(' + newGrade + '%)');
         }
     } else {
@@ -424,7 +410,7 @@ function calculateGrade(actualCategory, courseNum, semester, categoryWeights, cu
             if (alpha.length > 0) alpha.hide();
 
             //add span to summaryDiv
-            if(hasSummaryDiv) summaryDiv[0].innerHTML = "<span style='background-color:yellow'>Course Grade: (" + newGrade.toString() + "%)</span>";
+            if(summaryDivInfo[0]) summaryDivInfo[1][0].innerHTML = "<span style='background-color:yellow'>Course Grade: (" + newGrade.toString() + "%)</span>";
         }
     }
 
@@ -593,7 +579,7 @@ function createClassButton(id, num, startColor) {
     button.setAttribute('color', startColor);
     var backgroundColor = '#00b700';
     if (startColor == 'tomato') backgroundColor = '#d20909';
-    button.setAttribute('style', 'background-color:' + backgroundColor + '; border-width: 3px; color:white; margin-left:10px; margin-top: 10px; font-size:10px; padding:10px; border-radius: 6px;');
+    button.setAttribute('style', 'background-color:' + backgroundColor + '; border-width: 3px; color:white; margin-left:10px; margin-top: 3px; margin-bottom: 5px; font-size:10px; padding:10px; border-radius: 6px;');
     return button;
 }
 
@@ -616,6 +602,7 @@ function setColorOfButton(ele, singleGradeCalc) {
 }
 
 //-------------Final Calculator Functions----------------//
+
 function finalCalcDiv() {
     var div = document.createElement('div');
     div.setAttribute('id', 'finalCalc');
@@ -703,16 +690,17 @@ function finalCalculatorHandlers() {
 function alwaysEnable(){
     var d = document.createElement('div')
     d.setAttribute('id', 'alwaysEnableDiv')
-    d.setAttribute('style', 'float:right; margin-top:22px; font-size:10px')
+    d.setAttribute('style', 'float:right; margin-top:22px;')
 
     var inp = document.createElement('input')
     inp.setAttribute('type', 'checkbox')
+    inp.setAttribute('style', 'width: 8px;')
     inp.setAttribute('id', 'alwaysEnable')
 
     var lbl = document.createElement('label');
     lbl.setAttribute('for', 'alwaysEnable')
-    lbl.setAttribute('style', 'margin-left: 5px;')
-    lbl.innerHTML = 'Enable Grade Calculator On Load';
+    lbl.setAttribute('style', 'margin-left: 5px; font-size:8px;')
+    lbl.innerHTML = 'Always Enable Grade Calculator on Load';
 
     d.appendChild(inp)
     d.appendChild(lbl)
@@ -731,4 +719,17 @@ function alwaysEnableHandlers(){
             chrome.storage.sync.set({alwaysEnable: isChecked});
         })
     })
+}
+
+//returns summaryDiv Info
+function summaryDivInfo(course){
+    var summaryDiv = course.find('.summary-course').find('.course-grade-wrapper');
+    var hasSummaryDiv = false;
+    var summaryDivHtml = "";
+    if(summaryDiv.length > 0){
+        hasSummaryDiv = true;
+        summaryDivHtml = summaryDiv[0].innerHTML;
+    }
+    var arr = [hasSummaryDiv, summaryDiv, summaryDivHtml] 
+    return arr;
 }

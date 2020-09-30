@@ -109,7 +109,7 @@ $(document).ready(function () {
                     //num of each assignment by class
                     var numAssignmentsTotal = new Array(numClass);
                     var numAssignmentsToday = new Array(numClass);
-
+                    debugger
                     //set numAssignment for upcoming duedate
                     setNumAssignments(today, numAssignmentsToday);
                     //set numTotalAssignment for total
@@ -170,11 +170,7 @@ function printTime(day, due, totalAssigs, todayAssigs) {
         else datestr += day + "th";
         if (due == 5) datestr = 'today night';
         datestr += '</b></span>';
-
-        //var str = 'You have about <b>' + hrsToday + ' hrs and ' + minToday + ' min</b> of HW <b>for ' + datestr + '</b>  <br> <b> and about ' + hrs + ' hrs and ' + min + ' min</b> of HW in the <b>near future</b>! Good Luck!!   <br>  - Gradeology';
-        // if (items.doneForm != "true") str += '<br><br>We recommend you to fill the personalized time form for better accuracy. Pop up form is available by clicking the extension icon.'
-        // $("#right-column").prepend('<div id="timeology time" style="padding-left: 10px; padding-right: 10px; border: 1px solid #4CAF50; border-radius: 15px"><table> <tr> <th>Amount of Homework</th> </tr> <tr> <td id = "time display">' + str + '</td> </tr></table></div>');
-
+        
         $(timeDiv(hrsToday, minToday, datestr, hrs, min)).insertAfter("#enableTime")
     });
 }
@@ -221,6 +217,12 @@ function tipsDiv(div) {
     disable.innerHTML = '<br><br>*<i><b>Disable Time Tools</b> and view the other features below by clicking the Extension Icon top right!'
     div.appendChild(disable);
 
+    var incorrect = document.createElement('span');
+    incorrect.setAttribute('id', 'incorrectSP')
+    incorrect.setAttribute('style', 'display: none; font-size: ' + fontSize)
+    incorrect.innerHTML = '<br>*<i><b>Click Reread Courses</b> if time incorrectly displays above  &nbsp&nbsp&nbsp&nbsp ex: 0 hrs 0 min when assignments are present'
+    div.appendChild(incorrect);
+
     var reread = document.createElement('span');
     reread.setAttribute('id', 'rereadSP')
     reread.setAttribute('style', 'display: none; font-size: ' + fontSize)
@@ -239,11 +241,13 @@ function tipsDiv(div) {
             $('#disableSP').show();
             $('#rereadSP').show();
             $('#formSP').show();
+            $('#incorrectSP').show();
         } else {
             tips.innerHTML = 'Show Tips'
             $('#disableSP').hide();
             $('#rereadSP').hide();
             $('#formSP').hide();
+            $('#incorrectSP').hide();
         }
     });
 }

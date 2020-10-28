@@ -62,7 +62,7 @@ function createButtonDiv(arr) {
     buttonDiv.setAttribute('id', 'buttonDiv');
     buttonDiv.setAttribute('style', 'padding-left:17px');
     var sp = document.createElement('span');
-    sp.setAttribute('style', 'color:white; font-size:12px; margin-left:15px; background-color:DodgerBlue; padding:11px; border-radius:6px');
+    sp.setAttribute('style', 'color:black; font-size:12px; margin-left:15px; background-color:#e6e4e4; padding:11px; border-radius:6px');
     sp.innerHTML = 'Choose a course to edit:';
     buttonDiv.append(sp);
     for (var i = 0; i < arr.length; i++) {

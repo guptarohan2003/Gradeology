@@ -502,7 +502,7 @@ function addAssignment(category, score, total, courseNum, categoryChoosen, semes
 
 function originalGradeHeader(courseNum, originalGrade) {
     var added = document.createElement('div');
-    added.setAttribute('style', 'width:420px;border-radius: 6px;background-color:#ec0b0b; padding:6px; display:inline-block; margin-top:-10px');
+    added.setAttribute('style', 'width:420px;border-radius: 6px;background-color:#af0202; padding:6px; display:inline-block; margin-top:-10px');
     added.setAttribute('id', 'originalGradeDiv' + courseNum);
 
     var grade = document.createElement('h2');
@@ -517,7 +517,7 @@ function originalGradeHeader(courseNum, originalGrade) {
 function createInputArea(categoryNames, courseNum) {
     var div1 = document.createElement('div');
     div1.setAttribute('id', 'input' + courseNum);
-    div1.setAttribute('style', 'width:420px;height:40px;border-radius: 6px;background-color:#ec0b0b; padding:7px 7px 7px 16px; margin-top:2px; margin-bottom:-4px');
+    div1.setAttribute('style', 'width:420px;height:40px;border-radius: 6px;background-color:#af0202; padding:7px 7px 7px 16px; margin-top:2px; margin-bottom:-4px');
 
     categorySelect(div1, categoryNames, courseNum);
     inputValueItems(div1, courseNum, 'score', 'total', ' Score', ' Total', '55px', true, 0, 0);
@@ -577,12 +577,12 @@ function createClassButton(id, num, startColor) {
     button.setAttribute('class', 'enableCalc');
     button.setAttribute('courseNum', num.toString());
     button.setAttribute('color', startColor);
-    var backgroundColor = '#00b700';
-    if (startColor == 'tomato') backgroundColor = '#d20909';
-    button.setAttribute('style', 'background-color:' + backgroundColor + '; border-width: 3px; color:white; margin-left:10px; margin-top: 3px; margin-bottom: 5px; font-size:10px; padding:10px; border-radius: 6px;');
+    var backgroundColor = '#af0202';
+    // if (startColor == 'green') 
+        // backgroundColor = '#00b700';
+    button.setAttribute('style', 'background-color:' + backgroundColor + '; border-width: 1px; color:white; margin-left:10px; margin-top: 5px; margin-bottom: 5px; font-size:10px; padding:10px; border-radius: 6px;');
     return button;
 }
-
 
 function setColorOfButton(ele, singleGradeCalc) {
     var cut = ele.attributes['style'].value.indexOf(';');
@@ -590,12 +590,12 @@ function setColorOfButton(ele, singleGradeCalc) {
 
     if (ele.attributes['color'].value == 'tomato') {
         ele.attributes['color'].value = 'green';
-        ele.setAttribute('style', 'background-color:#00b700' + othercss);
         if (singleGradeCalc) $('button.enableCalc')[0].innerHTML = 'Disable Grade Calculator'
+        else ele.setAttribute('style', 'background-color:#016301' + othercss);
         return true;
     } else {
         ele.attributes['color'].value = 'tomato';
-        ele.setAttribute('style', 'background-color:#d20909' + othercss);
+        ele.setAttribute('style', 'background-color:#af0202' + othercss);
         if (singleGradeCalc) $('button.enableCalc')[0].innerHTML = 'Enable Grade Calculator'
         return false;
     }
@@ -632,10 +632,10 @@ function finalCalcDiv() {
     finalButton.innerHTML = 'Calculate';
     finalButton.setAttribute('id', 'calcFinalGrade');
     finalButton.setAttribute('color', 'tomato');
-    finalButton.setAttribute('style', "margin-left: 10px;margin-left: 10px;border-color:black;font-size:10px; padding: 1px 10px 1px 10px; border-radius:4px; height: 25px; width:75px;background-color:#7d07c7; color:white");
+    finalButton.setAttribute('style', "margin-left: 10px;border-color:black;font-size:10px; padding: 1px 10px 1px 10px; border-radius:4px; height: 25px; width:75px;background-color:#6b6a6a; color:white");
 
     var sp = document.createElement('span');
-    sp.setAttribute('style', 'width:70px; height:24px; color:white; font-size:12px; margin-left:15px; background-color:#7d07c7; padding:10px; border-radius:6px');
+    sp.setAttribute('style', 'width:70px; height:24px; color:white; font-size:12px; margin-left:15px; background-color:#6b6a6a; padding:10px; border-radius:6px');
     sp.innerHTML = 'Grade Needed: ';
 
     div.appendChild(current);
@@ -654,7 +654,7 @@ function enableFinalCalc() {
     var enableCalc = document.createElement('button');
     enableCalc.innerHTML = 'Enable Final Calculator';
     enableCalc.setAttribute('id', 'enableFinalCalc');
-    enableCalc.setAttribute('style', 'border-width: 3px; background-color:#7d07c7; color:white; margin-left:12px; font-size:10px; padding:10px; border-radius: 6px;');
+    enableCalc.setAttribute('style', 'border-width: 1px; background-color:#6b6a6a; color:white; margin-left:12px; font-size:10px; padding:10px; border-radius: 6px;');
     div.appendChild(enableCalc);
 
     div.append(finalCalcDiv());

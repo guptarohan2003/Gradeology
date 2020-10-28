@@ -1,11 +1,12 @@
 chrome.runtime.onInstalled.addListener(function (details) {
     
     //check if already installed when update
-    chrome.storage.sync.get(['enabled', 'coursesRead', 'alwaysEnable', 'fuhsd', 'notif'], function(val){
+    chrome.storage.sync.get(['enabled', 'coursesRead', 'alwaysEnable', 'fuhsd', 'notif', 'hideOverdue'], function(val){
         if(val.enabled != 'true') chrome.storage.sync.set({ enabled: "false" });
         if(val.coursesRead != 'true') chrome.storage.sync.set({ coursesRead: "false" });
         if(val.alwaysEnable != true) chrome.storage.sync.set({ alwaysEnable: false });
         if(val.fuhsd != true) chrome.storage.sync.set({fuhsd: false});
+        if(val.hideOverdue != true) chrome.storage.sync.set({hideOverdue: false})
         chrome.storage.sync.set({notif: false});
     })
 

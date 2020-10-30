@@ -1,10 +1,5 @@
 $(document).ready(function () {
     chrome.storage.sync.get(['alwaysEnable', 'notif'], function (val) {
-        //alert notification    
-        if(!val.notif){
-            alert('VIEW ALL YOUR GRADES ON ONE SCREEN IN YOUR GRADE REPORT!  CLICK GRADES-->GRADE REPORT                                  -gradeology :)')
-            chrome.storage.sync.set({notif: true});
-        }
 
         //course info
         var courseNum = 0

@@ -6,7 +6,14 @@ chrome.storage.sync.get(['numClasses'], function (val) {
 
 $(document).ready(function () {
     chrome.storage.sync.set({ fuhsd: true });
-    chrome.storage.sync.get(['coursesRead', 'enabled', 'hideOverdue'], function (val) {
+    chrome.storage.sync.get(['coursesRead', 'enabled', 'hideOverdue', 'notif'], function (val) {
+        // alert notification 
+        setTimeout(function () {
+            if (!val.notif) {
+                alert('YOU CAN NOW HIDE OVERDUE ASSIGNMENTS!                                       -gradeology :)')
+                chrome.storage.sync.set({ notif: true });
+            }
+        }, 200);
 
         // enable gradeology and hideOverdue button
         $("#right-column").prepend(hideOverdueButton());
@@ -123,28 +130,30 @@ $(document).ready(function () {
             });
         }
 
-        //hideOverdue handlers -- here to allow enough time for overdue to load from api
-        var overdue = $('#overdue-submissions');
-        if (overdue.length > 0) {
-            var overdueButton = $("#hideOverdue");
+        //hideOverdue handlers -- timeout to allow for overdue load
+        setTimeout(function () {
+            var overdue = $('#overdue-submissions');
+            if (overdue.length > 0) {
+                var overdueButton = $("#hideOverdue");
 
-            overdueButton.click(function () {
-                if (overdueButton[0].innerText == 'Hide Overdue Assignments') {
+                overdueButton.click(function () {
+                    if (overdueButton[0].innerText == 'Hide Overdue Assignments') {
+                        overdue.hide();
+                        overdueButton[0].innerText = 'OVERDUE ASSIGNMENTS HIDDEN'
+                        chrome.storage.sync.set({ hideOverdue: true })
+                    } else {
+                        overdue.show()
+                        overdueButton[0].innerText = 'Hide Overdue Assignments'
+                        chrome.storage.sync.set({ hideOverdue: false })
+                    }
+                })
+
+                if (val.hideOverdue) {
+                    overdueButton[0].innerText = 'OVERDUE ASSIGNMENTS HIDDEN'
                     overdue.hide();
-                    overdueButton[0].innerText = 'Show Overdue Assignments'
-                    chrome.storage.sync.set({ hideOverdue: true })
-                } else {
-                    overdue.show()
-                    overdueButton[0].innerText = 'Hide Overdue Assignments'
-                    chrome.storage.sync.set({ hideOverdue: false })
                 }
-            })
-
-            if (val.hideOverdue) {
-                overdueButton[0].innerText = 'Show Overdue Assignments'
-                overdue.hide();
             }
-        }
+        }, 200);
     });
 
 });
@@ -230,8 +239,8 @@ function timeDiv(hrsT, minT, date, hrs, min) {
 
 function tipsDiv(div) {
     var tips = document.createElement('button');
-    tips.innerHTML = 'Show Tips'
-    tips.setAttribute('style', "float: right;margin-right: 60px;border-color:black;font-size:10px; padding: 1px 10px 1px 10px; border-radius:4px; height: 20px; background-color:Ivory; color:grey;");
+    tips.innerHTML = 'Important Tips'
+    tips.setAttribute('style', "float: right;margin-right: 60px;border-color:black;font-size:10px; padding: 1px 10px 1px 10px; border-radius:4px; height: 20px; background-color:Ivory; color:black; width: 93px;");
     div.appendChild(tips);
 
     var fontSize = '10px';
@@ -261,14 +270,14 @@ function tipsDiv(div) {
     div.appendChild(form);
 
     tips.addEventListener("click", function () {
-        if (tips.innerText == 'Show Tips') {
+        if (tips.innerText == 'Important Tips') {
             tips.innerHTML = 'Hide Tips'
             $('#disableSP').show();
             $('#rereadSP').show();
             $('#formSP').show();
             $('#incorrectSP').show();
         } else {
-            tips.innerHTML = 'Show Tips'
+            tips.innerHTML = 'Important Tips'
             $('#disableSP').hide();
             $('#rereadSP').hide();
             $('#formSP').hide();
@@ -281,7 +290,7 @@ function enableGradeologyButton() {
     var button = document.createElement('button');
     button.innerHTML = 'Enable Time Tools';
     button.setAttribute('id', 'enableTime');
-    button.setAttribute('style', 'border-width: 2px; background-color:#f10505; color:white; margin-left:10px; font-size:10px; padding:10px; border-radius: 6px;');
+    button.setAttribute('style', 'border-width: 2px; background-color:#b51605; color:white; margin-left:10px; font-size:10px; padding:10px; border-radius: 6px;');
     return button;
 }
 
@@ -289,6 +298,6 @@ function hideOverdueButton() {
     var button = document.createElement('button');
     button.innerHTML = 'Hide Overdue Assignments';
     button.setAttribute('id', 'hideOverdue');
-    button.setAttribute('style', 'border-width: 2px; border-color: #b51605; background-color:#d8d8d8; color:black; margin:10px 0px -10px 10px; font-size:10px; padding:5px 15px; border-radius: 6px;');
+    button.setAttribute('style', 'border-width: 2px; border-color: #b51605; background-color:#d8d8d8; color:#8c0101; margin:10px 0px -10px 10px; font-size:10px; padding:5px 15px; border-radius: 6px;');
     return button;
 }

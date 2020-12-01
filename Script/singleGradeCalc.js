@@ -1,49 +1,52 @@
 $(document).ready(function () {
-    chrome.storage.sync.get(['alwaysEnable', 'notif'], function (val) {
+    setTimeout(function () {
+        chrome.storage.sync.get(['alwaysEnable', 'notif'], function (val) {
 
-        //course info
-        var courseNum = 0
-        var course = $('.gradebook-course').eq(0);
+            //course info
+            var courseNum = 0
+            var course = $('.gradebook-course').eq(0);
 
-        //semester info
-        var semesterNum = new Date().getMonth() >= 7 ? 1 : 2;
-        var semester = course.find('.period-row').eq(semesterNum - 1);
-        var semesterid = semester[0].attributes['data-id'].value;
+            //semester info
+            var semesterNum = new Date().getMonth() >= 7 ? 1 : 2;
+            var semester = course.find('.period-row').eq(semesterNum - 1);
+            var semesterid = semester[0].attributes['data-id'].value;
 
-        //original grade
-        var originalGrade = semester[0].children[1].innerText;
-        originalGrade = originalGrade.substring(originalGrade.indexOf('(') + 1, originalGrade.indexOf('%') + 1);
+            //original grade
+            var originalGrade = semester[0].children[1].innerText;
+            originalGrade = originalGrade.substring(originalGrade.indexOf('(') + 1, originalGrade.indexOf('%') + 1);
 
-        //create button and final calc div
-        $('#center-top').append(createButtonDiv(val.alwaysEnable));
-        //  $('#enableFinalCalc')[0].style['margin-left'] = '26px';
-        $('button.enableCalc')[0].style['margin-top'] = '0px';
-        $('#currentGrade')[0].value = parseFloat(originalGrade)
-        $('#finalGradeDiv').find('div#finalCalc').hide();
-        finalCalculatorHandlers();
+            //create button and final calc div
+            $('#center-top').append(createButtonDiv(val.alwaysEnable));
+            //  $('#enableFinalCalc')[0].style['margin-left'] = '26px';
+            $('button.enableCalc')[0].style['margin-top'] = '0px';
+            $('#currentGrade')[0].value = parseFloat(originalGrade)
+            $('#finalGradeDiv').find('div#finalCalc').hide();
+            finalCalculatorHandlers();
 
-        //add alwaysEnable checkbox
-        $(alwaysEnable()).insertAfter($('#buttonDiv'))
-        alwaysEnableHandlers();
-        
-        //summaryDiv Information
-        var summaryDivInf = summaryDivInfo(course);
+            //add alwaysEnable checkbox
+            $(alwaysEnable()).insertAfter($('#buttonDiv'))
+            alwaysEnableHandlers();
 
-        //add calculator
-        if(val.alwaysEnable) calculator(course, courseNum, semester, semesterid, originalGrade, summaryDivInf);
+            //summaryDiv Information
+            var summaryDivInf = summaryDivInfo(course);
 
-        //enable class gradeCalc
-        $('button.enableCalc').click(function (element) {
-            var enable = setColorOfButton(element.target, true);
+            //add calculator
+            if (val.alwaysEnable) calculator(course, courseNum, semester, semesterid, originalGrade, summaryDivInf);
 
-            if (enable) {
-                calculator(course, courseNum, semester, semesterid, originalGrade, summaryDivInf)
-            } else {
-                removeCalculator(course, courseNum, semester, semesterid, summaryDivInf)
-                $('#currentGrade')[0].value = parseFloat(originalGrade)
-            }
+            //enable class gradeCalc
+            $('button.enableCalc').click(function (element) {
+                var enable = setColorOfButton(element.target, true);
+
+                if (enable) {
+                    calculator(course, courseNum, semester, semesterid, originalGrade, summaryDivInf)
+                } else {
+                    removeCalculator(course, courseNum, semester, semesterid, summaryDivInf)
+                    $('#currentGrade')[0].value = parseFloat(originalGrade)
+                }
+            });
         });
-    });
+
+    }, 500);
 });
 
 function createButtonDiv(enableCalculator) {
@@ -51,7 +54,7 @@ function createButtonDiv(enableCalculator) {
     buttonDiv.setAttribute('id', 'buttonDiv')
     buttonDiv.setAttribute('style', 'display: inline-flex; margin-left:-10px')
 
-    if(enableCalculator){
+    if (enableCalculator) {
         buttonDiv.append(createClassButton('Disable Grade Calculator', 1, 'green'));
 
     } else {

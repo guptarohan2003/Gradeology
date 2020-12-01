@@ -7,7 +7,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
         if(val.alwaysEnable != true) chrome.storage.sync.set({ alwaysEnable: false });
         if(val.fuhsd != true) chrome.storage.sync.set({fuhsd: false});
         if(val.hideOverdue != true) chrome.storage.sync.set({hideOverdue: false})
-        chrome.storage.sync.set({notif: false});
+        if(val.notif != true) chrome.storage.sync.set({notif: false});
     })
 
     chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {

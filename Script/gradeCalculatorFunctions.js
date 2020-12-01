@@ -16,9 +16,18 @@ function calculator(course, courseNum, semester, semesterid, originalGrade, summ
         var x = categoriesRead.eq(i);
         var categoryId = x[0].attributes['data-parent-id'].value;
         if (categoryId == semesterid) {
+            debugger
             var categoryNameWeightCurrent = x[0].innerText.toString();
             var name = categoryNameWeightCurrent.substring(0, categoryNameWeightCurrent.indexOf('Category'));
-            var weight = categoryNameWeightCurrent.substring(categoryNameWeightCurrent.indexOf('(') + 1, categoryNameWeightCurrent.indexOf('%'));
+            var percent = categoryNameWeightCurrent.indexOf('%');
+            var cut = percent - 1;
+            while(true){
+                if(isNaN(categoryNameWeightCurrent.charAt(cut))){
+                    break;
+                }
+                cut--;
+            } 
+            var weight = categoryNameWeightCurrent.substring(cut + 1, percent);
             var parentId = x[0].attributes['data-id'].value;
 
             var originalCategoryGrade = categoryNameWeightCurrent.indexOf("—");
@@ -26,7 +35,7 @@ function calculator(course, courseNum, semester, semesterid, originalGrade, summ
                 originalCategoryGrade = categoryNameWeightCurrent.substring(categoryNameWeightCurrent.lastIndexOf('(') + 1, categoryNameWeightCurrent.lastIndexOf('%'))
             else
                 originalCategoryGrade = 0
-
+            
             categoryNames.push(name);
             categoryWeights.push(isNaN(parseFloat(weight)) ? 100 : parseFloat(weight));
             categoryParentId.push(parentId);
@@ -342,7 +351,7 @@ function calculateGrade(actualCategory, courseNum, semester, categoryWeights, cu
         } else
             tempCategoryWeights.push(0)
     }
-
+    debugger
     //fix grade if totalweights isnt 100%
     var totalWeight = 0;
     for (var i = 0; i < categoryWeights.length; i++) {

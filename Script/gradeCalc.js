@@ -1,60 +1,64 @@
 var isFuhsd;
-chrome.storage.sync.get(['fuhsd'], function(val){
+chrome.storage.sync.get(['fuhsd'], function (val) {
     isFuhsd = val.fuhsd;
 })
 $(document).ready(function () {
-    var courses = $('.gradebook-course');
-    var semesterNum = new Date().getMonth() >= 7 ? 1 : 2;
+    setTimeout(function () {
 
-    var class_names = [];
-    var summaryDivInfoCourses = [];
-    
-    for (var i = 0; i < courses.length; i++) {
-        var courseName = courses[i].innerText;
-        courseName = courseName.substring(0, courseName.lastIndexOf(':'))
-        if(!isNaN(courseName.substring(courseName.length - 2, courseName.length)))
-            courseName = courseName.substring(0, courseName.length - 7);
-        else 
-            courseName = 'delete';
+        var courses = $('.gradebook-course');
+        var semesterNum = new Date().getMonth() >= 7 ? 1 : 2;
 
-        var origGrade = courses.eq(i).find('.period-row').eq(semesterNum - 1)[0].children[1].innerText;
-        origGrade = origGrade.substring(origGrade.indexOf('(') + 1, origGrade.indexOf('%') + 1);
-        if(origGrade != "") origGrade = ':&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp' + origGrade;
+        var class_names = [];
+        var summaryDivInfoCourses = [];
 
-        class_names.push(courseName + origGrade)
-        summaryDivInfoCourses.push(summaryDivInfo(courses.eq(i)))
-    }
+        for (var i = 0; i < courses.length; i++) {
+            var courseName = courses[i].innerText;
+            courseName = courseName.substring(0, courseName.lastIndexOf(':'))
+            if (!isNaN(courseName.substring(courseName.length - 2, courseName.length)))
+                courseName = courseName.substring(0, courseName.length - 7);
+            else
+                courseName = 'delete';
 
-    //create button and final calc div
-    $('#center-top').append(createButtonDiv(class_names));
-    $('#finalGradeDiv').find('div#finalCalc').hide();
-    finalCalculatorHandlers();
-    $('#enableFinalCalc')[0].style['margin-left'] = '26px';
-    $('#enableFinalCalc')[0].style['margin-top'] = '3px';
+            var origGrade = courses.eq(i).find('.period-row').eq(semesterNum - 1)[0].children[1].innerText;
+            origGrade = origGrade.substring(origGrade.indexOf('(') + 1, origGrade.indexOf('%') + 1);
+            if (origGrade != "") origGrade = ':&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp' + origGrade;
 
-    $('button.enableCalc').click(function (element) {
-        //course info
-        var courseNum = element.target.attributes['courseNum'].value;
-        var course = courses.eq(courseNum - 1);
-
-        //current semester info
-        var semester = course.find('.period-row').eq(semesterNum - 1);
-        var semesterid = semester[0].attributes['data-id'].value;
-
-        //original grade
-        var originalGrade = semester[0].children[1].innerText;
-        originalGrade = originalGrade.substring(originalGrade.indexOf('(') + 1, originalGrade.indexOf('%') + 1);
-        
-        var add = setColorOfButton(element.target, false);
-        if (add) {
-            course.find('.gradebook-course-grades')[0].style['display'] = 'block'
-            calculator(course, courseNum, semester, semesterid, originalGrade, summaryDivInfoCourses[courseNum - 1])
-            $('#input' + courseNum)[0].style['margin-bottom'] = '7px';
-        } else {
-            course.find('.gradebook-course-grades')[0].style['display'] = 'none'
-            removeCalculator(course, courseNum, semester, semesterid, summaryDivInfoCourses[courseNum - 1])
+            class_names.push(courseName + origGrade)
+            summaryDivInfoCourses.push(summaryDivInfo(courses.eq(i)))
         }
-    });
+
+        //create button and final calc div
+        $('#center-top').append(createButtonDiv(class_names));
+        $('#finalGradeDiv').find('div#finalCalc').hide();
+        finalCalculatorHandlers();
+        $('#enableFinalCalc')[0].style['margin-left'] = '26px';
+        $('#enableFinalCalc')[0].style['margin-top'] = '3px';
+
+        $('button.enableCalc').click(function (element) {
+            //course info
+            var courseNum = element.target.attributes['courseNum'].value;
+            var course = courses.eq(courseNum - 1);
+
+            //current semester info
+            var semester = course.find('.period-row').eq(semesterNum - 1);
+            var semesterid = semester[0].attributes['data-id'].value;
+
+            //original grade
+            var originalGrade = semester[0].children[1].innerText;
+            originalGrade = originalGrade.substring(originalGrade.indexOf('(') + 1, originalGrade.indexOf('%') + 1);
+
+            var add = setColorOfButton(element.target, false);
+            if (add) {
+                course.find('.gradebook-course-grades')[0].style['display'] = 'block'
+                calculator(course, courseNum, semester, semesterid, originalGrade, summaryDivInfoCourses[courseNum - 1])
+                $('#input' + courseNum)[0].style['margin-bottom'] = '7px';
+            } else {
+                course.find('.gradebook-course-grades')[0].style['display'] = 'none'
+                removeCalculator(course, courseNum, semester, semesterid, summaryDivInfoCourses[courseNum - 1])
+            }
+        });
+
+    }, 500);
 });
 
 function createButtonDiv(arr) {
@@ -66,7 +70,7 @@ function createButtonDiv(arr) {
     sp.innerHTML = 'Choose a course to edit:';
     buttonDiv.append(sp);
     for (var i = 0; i < arr.length; i++) {
-        if(isFuhsd && arr[i].indexOf('delete') == -1) 
+        if (isFuhsd && arr[i].indexOf('delete') == -1)
             buttonDiv.append(createClassButton(arr[i], i + 1, 'tomato'));
     }
 

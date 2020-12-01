@@ -153,7 +153,7 @@ $(document).ready(function () {
                     overdue.hide();
                 }
             }
-        }, 200);
+        }, 600);
     });
 
 });

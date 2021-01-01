@@ -6,11 +6,12 @@ $(document).ready(function () {
     setTimeout(function () {
 
         var courses = $('.gradebook-course');
-        var semesterNum = new Date().getMonth() >= 7 ? 1 : 2;
+        // var semesterNum = new Date().getMonth() >= 7 ? 1 : 2;
+        var semesterNum = 1;
 
         var class_names = [];
         var summaryDivInfoCourses = [];
-
+        debugger
         for (var i = 0; i < courses.length; i++) {
             var courseName = courses[i].innerText;
             courseName = courseName.substring(0, courseName.lastIndexOf(':'))

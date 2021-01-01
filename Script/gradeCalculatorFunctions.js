@@ -16,17 +16,16 @@ function calculator(course, courseNum, semester, semesterid, originalGrade, summ
         var x = categoriesRead.eq(i);
         var categoryId = x[0].attributes['data-parent-id'].value;
         if (categoryId == semesterid) {
-            debugger
             var categoryNameWeightCurrent = x[0].innerText.toString();
             var name = categoryNameWeightCurrent.substring(0, categoryNameWeightCurrent.indexOf('Category'));
             var percent = categoryNameWeightCurrent.indexOf('%');
             var cut = percent - 1;
-            while(true){
-                if(isNaN(categoryNameWeightCurrent.charAt(cut))){
+            while (true) {
+                if (isNaN(categoryNameWeightCurrent.charAt(cut))) {
                     break;
                 }
                 cut--;
-            } 
+            }
             var weight = categoryNameWeightCurrent.substring(cut + 1, percent);
             var parentId = x[0].attributes['data-id'].value;
 
@@ -35,7 +34,7 @@ function calculator(course, courseNum, semester, semesterid, originalGrade, summ
                 originalCategoryGrade = categoryNameWeightCurrent.substring(categoryNameWeightCurrent.lastIndexOf('(') + 1, categoryNameWeightCurrent.lastIndexOf('%'))
             else
                 originalCategoryGrade = 0
-            
+
             categoryNames.push(name);
             categoryWeights.push(isNaN(parseFloat(weight)) ? 100 : parseFloat(weight));
             categoryParentId.push(parentId);
@@ -52,7 +51,8 @@ function calculator(course, courseNum, semester, semesterid, originalGrade, summ
 
     course.prepend(createInputArea(categoryNames, courseNum));
     course.prepend(originalGradeHeader(courseNum, originalGrade));
-    //--------------------HANDLERS--------------------------//
+
+    //---------------------------------------HANDLERS--------------------------//
 
     //hide button handler
     $('.deleteGiven' + courseNum).click(function (eleme) {
@@ -203,6 +203,9 @@ function calculator(course, courseNum, semester, semesterid, originalGrade, summ
         }
 
     });
+    
+    //hide assignments that have been striked through
+    strikeThroughAssigs(course, categoryParentId, courseNum)
 }
 
 function removeCalculator(course, courseNum, semester, semesterid, summaryDivInfo) {
@@ -260,11 +263,25 @@ function removeCalculator(course, courseNum, semester, semesterid, summaryDivInf
     }
 
     // fix summaryDiv html
-    if(summaryDivInfo[0]) summaryDivInfo[1][0].innerHTML = summaryDivInfo[2];
+    if (summaryDivInfo[0]) summaryDivInfo[1][0].innerHTML = summaryDivInfo[2];
 
     //remove added Assignment
     var addedAssigs = course.find('.addedItem' + courseNum);
     if (addedAssigs.length > 0) addedAssigs.remove();
+}
+
+function strikeThroughAssigs(course, categoryParentId, courseNum) {
+    var dropped = course.find('.dropped');
+    for (var j = 0; j < categoryParentId.length; j++) {
+        for (var i = 0; i < dropped.length; i++) {
+            var assig = dropped.eq(i);
+            var id = assig[0].attributes['data-parent-id'].value;
+            if (categoryParentId[j] == id) {
+                var hideButton = dropped.eq(i).find('.deleteGiven' + courseNum);
+                hideButton.click();
+            }
+        }
+    }
 }
 
 function getGradeValues(course, currentTotalPoints, currentGivenPoints, categoryParentId, courseNum) {
@@ -351,7 +368,7 @@ function calculateGrade(actualCategory, courseNum, semester, categoryWeights, cu
         } else
             tempCategoryWeights.push(0)
     }
-    debugger
+
     //fix grade if totalweights isnt 100%
     var totalWeight = 0;
     for (var i = 0; i < categoryWeights.length; i++) {
@@ -392,9 +409,9 @@ function calculateGrade(actualCategory, courseNum, semester, categoryWeights, cu
                 span.show();
             }
 
-            if(summaryDivInfo[0]) summaryDivInfo[1][0].innerHTML = summaryDivInfo[2];
+            if (summaryDivInfo[0]) summaryDivInfo[1][0].innerHTML = summaryDivInfo[2];
         } else {
-            if(summaryDivInfo[0]) summaryDivInfo[1][0].innerHTML = "<span style='background-color:yellow'>Course Grade: (" + newGrade.toString() + "%)</span>";
+            if (summaryDivInfo[0]) summaryDivInfo[1][0].innerHTML = "<span style='background-color:yellow'>Course Grade: (" + newGrade.toString() + "%)</span>";
             semester.find('span.toBeDeleted' + courseNum).text('(' + newGrade + '%)');
         }
     } else {
@@ -419,7 +436,7 @@ function calculateGrade(actualCategory, courseNum, semester, categoryWeights, cu
             if (alpha.length > 0) alpha.hide();
 
             //add span to summaryDiv
-            if(summaryDivInfo[0]) summaryDivInfo[1][0].innerHTML = "<span style='background-color:yellow'>Course Grade: (" + newGrade.toString() + "%)</span>";
+            if (summaryDivInfo[0]) summaryDivInfo[1][0].innerHTML = "<span style='background-color:yellow'>Course Grade: (" + newGrade.toString() + "%)</span>";
         }
     }
 
@@ -588,7 +605,7 @@ function createClassButton(id, num, startColor) {
     button.setAttribute('color', startColor);
     var backgroundColor = '#af0202';
     // if (startColor == 'green') 
-        // backgroundColor = '#00b700';
+    // backgroundColor = '#00b700';
     button.setAttribute('style', 'background-color:' + backgroundColor + '; border-width: 1px; color:white; margin-left:10px; margin-top: 5px; margin-bottom: 5px; font-size:10px; padding:10px; border-radius: 6px;');
     return button;
 }
@@ -696,7 +713,7 @@ function finalCalculatorHandlers() {
 
 //-------------Always Enable Functions-------------//
 
-function alwaysEnable(){
+function alwaysEnable() {
     var d = document.createElement('div')
     d.setAttribute('id', 'alwaysEnableDiv')
     d.setAttribute('style', 'float:right; margin-top:22px;')
@@ -717,28 +734,28 @@ function alwaysEnable(){
 
 }
 
-function alwaysEnableHandlers(){
-    chrome.storage.sync.get(['alwaysEnable'], function(val){
+function alwaysEnableHandlers() {
+    chrome.storage.sync.get(['alwaysEnable'], function (val) {
         var chk = $('#alwaysEnable');
 
         chk[0].checked = val.alwaysEnable
 
-        chk.click(function(){
+        chk.click(function () {
             var isChecked = chk[0].checked;
-            chrome.storage.sync.set({alwaysEnable: isChecked});
+            chrome.storage.sync.set({ alwaysEnable: isChecked });
         })
     })
 }
 
 //returns summaryDiv Info
-function summaryDivInfo(course){
+function summaryDivInfo(course) {
     var summaryDiv = course.find('.summary-course').find('.course-grade-wrapper');
     var hasSummaryDiv = false;
     var summaryDivHtml = "";
-    if(summaryDiv.length > 0){
+    if (summaryDiv.length > 0) {
         hasSummaryDiv = true;
         summaryDivHtml = summaryDiv[0].innerHTML;
     }
-    var arr = [hasSummaryDiv, summaryDiv, summaryDivHtml] 
+    var arr = [hasSummaryDiv, summaryDiv, summaryDivHtml]
     return arr;
 }

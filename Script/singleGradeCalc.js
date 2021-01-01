@@ -7,7 +7,8 @@ $(document).ready(function () {
             var course = $('.gradebook-course').eq(0);
 
             //semester info
-            var semesterNum = new Date().getMonth() >= 7 ? 1 : 2;
+            // var semesterNum = new Date().getMonth() >= 7 ? 1 : 2;
+            var semesterNum = 1;
             var semester = course.find('.period-row').eq(semesterNum - 1);
             var semesterid = semester[0].attributes['data-id'].value;
 

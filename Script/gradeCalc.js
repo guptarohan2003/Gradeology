@@ -6,13 +6,14 @@ $(document).ready(function () {
     setTimeout(function () {
 
         var courses = $('.gradebook-course');
-        // var semesterNum = new Date().getMonth() >= 7 ? 1 : 2;
-        var semesterNum = 1;
 
         var class_names = [];
         var summaryDivInfoCourses = [];
-        debugger
+        var semesters = [];
+        
         for (var i = 0; i < courses.length; i++) {
+            semesters[i] = getCurrentSemester(courses.eq(i));
+
             var courseName = courses[i].innerText;
             courseName = courseName.substring(0, courseName.lastIndexOf(':'))
             if (!isNaN(courseName.substring(courseName.length - 2, courseName.length)))
@@ -20,7 +21,7 @@ $(document).ready(function () {
             else
                 courseName = 'delete';
 
-            var origGrade = courses.eq(i).find('.period-row').eq(semesterNum - 1)[0].children[1].innerText;
+            var origGrade = semesters[i][0].children[1].innerText;
             origGrade = origGrade.substring(origGrade.indexOf('(') + 1, origGrade.indexOf('%') + 1);
             if (origGrade != "") origGrade = ':&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp' + origGrade;
 
@@ -40,8 +41,8 @@ $(document).ready(function () {
             var courseNum = element.target.attributes['courseNum'].value;
             var course = courses.eq(courseNum - 1);
 
-            //current semester info
-            var semester = course.find('.period-row').eq(semesterNum - 1);
+            //semester info
+            var semester = semesters[courseNum - 1]
             var semesterid = semester[0].attributes['data-id'].value;
 
             //original grade

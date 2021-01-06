@@ -203,7 +203,7 @@ function calculator(course, courseNum, semester, semesterid, originalGrade, summ
         }
 
     });
-    
+
     //hide assignments that have been striked through
     strikeThroughAssigs(course, categoryParentId, courseNum)
 }
@@ -625,6 +625,18 @@ function setColorOfButton(ele, singleGradeCalc) {
         if (singleGradeCalc) $('button.enableCalc')[0].innerHTML = 'Enable Grade Calculator'
         return false;
     }
+}
+
+function getCurrentSemester(course) {
+    var semester = course.find('.period-row');
+    var i;
+    for (i = 0; i < semester.length; i++) {
+        var classes = semester.eq(i)[0].className;
+        if (classes.indexOf("childrenCollapsed") == -1) {
+            break;
+        }
+    }
+    return semester.eq(i);
 }
 
 //-------------Final Calculator Functions----------------//
